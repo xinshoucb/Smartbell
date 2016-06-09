@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 显示等级设置 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/settings_title_padding_left"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingRight="12dp"
+            android:text="FUNCTION : "
+            android:textAppearance="@android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/dlg_radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="level"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <RadioButton
+                android:id="@+id/dlg_radio1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="1"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/dlg_radio2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/dlg_radio3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="3"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/dlg_radio4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="4"></RadioButton>
+        </RadioGroup>
+    </LinearLayout>
+
+    <!-- 退出时间设置 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/settings_title_padding_left"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingRight="5dp"
+            android:text="SLEEP TIME : "
+            android:textAppearance="@android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/dlg_sleep_radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="sleep"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <RadioButton
+                android:id="@+id/dlg_sleep_radio1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1min"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/dlg_sleep_radio2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="5min"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/dlg_sleep_radio3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="10min"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/dlg_sleep_radio4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="never"></RadioButton>
+        </RadioGroup>
+    </LinearLayout>
+
+    <!-- 循环时间设置条 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/settings_title_padding_left">
+
+        <TextView
+            android:id="@+id/time_title_tv"
+            android:layout_width="@dimen/settings_title_text_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="ROLLING TIME : "
+            android:textAppearance="@android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dlg_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:text="5s"
+            android:textAppearance="@android:attr/textAppearanceLarge" />
+
+        <SeekBar
+            android:id="@+id/dlg_seerbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_toLeftOf="@id/time_title_tv"
+            android:layout_toRightOf="@id/time_title_tv"
+            android:max="60" />
+    </RelativeLayout>
+
+    <!-- 绿色显示时间 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/settings_title_padding_left">
+
+        <TextView
+            android:id="@+id/green_time_title_tv"
+            android:layout_width="@dimen/settings_title_text_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="GREEN TIME : "
+            android:textAppearance="@android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/green_dlg_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:text="5min"
+            android:textAppearance="@android:attr/textAppearanceLarge" />
+
+        <SeekBar
+            android:id="@+id/green_dlg_seerbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_toLeftOf="@id/green_time_title_tv"
+            android:layout_toRightOf="@id/green_time_title_tv"
+            android:max="15" />
+    </RelativeLayout>
+
+    <!-- 黄色显示时间 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/settings_title_padding_left">
+
+        <TextView
+            android:id="@+id/yellow_time_title_tv"
+            android:layout_width="@dimen/settings_title_text_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="YELLOW TIME : "
+            android:textAppearance="@android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/yellow_dlg_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:text="5min"
+            android:textAppearance="@android:attr/textAppearanceLarge" />
+
+        <SeekBar
+            android:id="@+id/yellow_dlg_seerbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_toLeftOf="@id/yellow_time_title_tv"
+            android:layout_toRightOf="@id/yellow_time_title_tv"
+            android:max="15" />
+    </RelativeLayout>
+
+    <!-- 红色显示时间 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/settings_title_padding_left">
+
+        <TextView
+            android:id="@+id/red_time_title_tv"
+            android:layout_width="@dimen/settings_title_text_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="RED TIME : "
+            android:textAppearance="@android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/red_dlg_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:text="5min"
+            android:textAppearance="@android:attr/textAppearanceLarge" />
+
+        <SeekBar
+            android:id="@+id/red_dlg_seerbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_toLeftOf="@id/red_time_title_tv"
+            android:layout_toRightOf="@id/red_time_title_tv"
+            android:max="15" />
+    </RelativeLayout>
+
+    <!-- 确认/取消按钮 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn"
+            android:text="Cancel"
+            android:textColor="@color/dialog_btn_text" />
+
+        <TextView
+            android:id="@+id/dev_line"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@color/gray" />
+
+        <Button
+            android:id="@+id/dialog_sure"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn"
+            android:text="OK"
+            android:textColor="@color/dialog_btn_text" />
+    </LinearLayout>
+
+</LinearLayout>

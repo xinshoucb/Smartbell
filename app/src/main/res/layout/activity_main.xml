@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    tools:context=".MainActivity">
+
+    <include
+        android:id="@+id/item_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/layout_item"
+        android:visibility="invisible" />
+
+    <include
+        android:id="@+id/item_2"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/item_1"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_3"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/item_2"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_4"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/item_1"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_5"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/item_1"
+        android:layout_toRightOf="@id/item_4"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_6"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/item_1"
+        android:layout_toRightOf="@id/item_5"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/logo_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="5S solucoes"
+        android:textColor="@color/content_text_color"
+        android:textSize="100dp" />
+
+</RelativeLayout>
