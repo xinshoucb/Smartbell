@@ -44,8 +44,19 @@ public class DataManager {
     }
 
     private void cancelData(String bellStr) {
-        if (mDataList.size() >= 0) {
-            mDataList.remove(0);
+        if(null == bellStr)
+            return;
+
+        int postion = -1;
+        for (int i = 0; i < mDataList.size(); i++) {
+            if(bellStr.equals(mDataList.get(i).getData())){
+                postion = i;
+                break;
+            }
+        }
+
+        if(postion < mDataList.size() && postion > 0){
+            mDataList.remove(postion);
             mCallBack.refreshView(mDataList);
         }
     }

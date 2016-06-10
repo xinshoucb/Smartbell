@@ -118,7 +118,7 @@ public class DataService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (mLock) { // һ��ֻ��һ���߳̽�������
+                synchronized (mLock) { 
                     isStop = false;
                     Looper.prepare();
 
@@ -204,7 +204,7 @@ public class DataService extends Service {
     }
 
     int count = 0;
-    String[] testData = {"#001", "#002", "#003", "#004", "#005", "#006", "-003", "-002"};
+    String[] testData = {"#201", "#2d2", "#303", "#334", "#405", "#506", "-2d2", "-334", "#603", "#702", "-405", "-506", "#aa6", "#A23", "#d02", "-702", "-702"};
 
     private void testData() {
 
@@ -224,7 +224,7 @@ public class DataService extends Service {
                 if (count >= testData.length)
                     mTimer.cancel();
             }
-        }, 5000, 10000);
+        }, 5000, 5000);
     }
 
     private boolean isMainActivityTop() {

@@ -29,8 +29,8 @@ public class LayoutItemViewHolder {
     }
 
     public void refreshView() {
-        contentTv.setTextColor(Color.BLACK);
-        layoutItem.setBackgroundResource(R.drawable.tv_bg_green);
+        contentTv.setTextColor(setDataInfo.getTextColor());
+        layoutItem.setBackgroundResource(setDataInfo.getBackgroundColor());
 
         contentTv.setText(setDataInfo.getData());
 

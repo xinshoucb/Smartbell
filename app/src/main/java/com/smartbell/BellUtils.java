@@ -56,4 +56,17 @@ public class BellUtils {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
+
+    /**
+     * 把字符转化成数字
+     * @param value
+     * @return 返回-1表示转换失败
+     */
+    public static int str2Int(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 }

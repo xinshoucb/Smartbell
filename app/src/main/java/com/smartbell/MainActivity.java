@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
-    private final static String SERVICE_NAME = "com.example.bell_x3.DataService";
+    private final static String SERVICE_NAME = "com.smartbell.DataService";
 
     private int level = 1;
 
@@ -65,9 +65,6 @@ public class MainActivity extends Activity {
                 mViewManager.initParam();
                 if (initData != null)
                     mDataManager.getDataServiceCallBack().updateData(initData);
-//					mDataManager.addData(initData);
-//				mDataManager.addData("00");
-
             }
         });
         Intent intent = new Intent(this, DataService.class);
@@ -100,7 +97,6 @@ public class MainActivity extends Activity {
             Log.d("chenbo", "activity Service Connected ");
             mDataService = ((DataService.MsgBinder) service).getService();
             mDataService.setCallBack(mDataManager.getDataServiceCallBack());
-            // mDataService.getDatas();
         }
     };
 
