@@ -89,21 +89,21 @@ public class ViewManager {
         // show logo page when there is no data
         if (dataCount > 0) {
             logoTv.setVisibility(View.GONE);
+
+            int showViewCount = Math.max(Math.min(SHOW_VIEW_COUNT_MAX, dataCount), 0);
+
+            // layout view
+            if (curShowViewCount != showViewCount) {
+                layoutView(showViewCount);
+            }
+
+            // fill view
+            for (int i = 0; i < showViewCount; i++) {
+                mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeBig));
+                mViewHolders[i].setData(curShowDatas.get(i));
+            }
         } else {
             logoTv.setVisibility(View.VISIBLE);
-        }
-
-        int showViewCount = Math.max(Math.min(SHOW_VIEW_COUNT_MAX, dataCount), 0);
-
-        // layout view
-        if (curShowViewCount != showViewCount) {
-            layoutView(showViewCount);
-        }
-
-        // fill view
-        for (int i = 0; i < showViewCount; i++) {
-            mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeBig));
-            mViewHolders[i].setData(curShowDatas.get(i));
         }
 
     }

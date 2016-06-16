@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.smartbell"
     android:versionCode="2"
-    android:versionName="2.2.160610">
+    android:versionName="2.2.160615">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

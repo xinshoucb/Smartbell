@@ -55,7 +55,7 @@ public class DataManager {
             }
         }
 
-        if(postion < mDataList.size() && postion > 0){
+        if(postion < mDataList.size() && postion >= 0){
             mDataList.remove(postion);
             mCallBack.refreshView(mDataList);
         }

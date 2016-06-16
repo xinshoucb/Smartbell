@@ -63,8 +63,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 mViewManager.initParam();
-                if (initData != null)
-                    mDataManager.getDataServiceCallBack().updateData(initData);
+                if (initData != null) mDataManager.getDataServiceCallBack().updateData(initData);
             }
         });
         Intent intent = new Intent(this, DataService.class);
