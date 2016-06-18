@@ -58,9 +58,9 @@
         android:layout_height="match_parent"
         android:ellipsize="marquee"
         android:gravity="center"
+        android:background="@color/black"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
-        android:background="@color/black"
         android:text="5S solucoes"
         android:textColor="@color/content_text_color"
         android:textSize="100dp" />
