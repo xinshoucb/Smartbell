@@ -86,23 +86,26 @@ public class DataInfo {
                     break;
                 case 3:
                     int tenInt = (dataInt - hundredInt * 100) / 10;
-                    if(tenInt < 3){
+                    if(dataInt > 300 && dataInt < 330){
                         backgroundColor = R.color.white;
-                    }else{
+                    }else if(dataInt >= 330 && dataInt < 340){
                         backgroundColor = R.color.blue;
+                    }else{
+                        backgroundColor = R.color.green;
                     }
                     break;
                 case 4:
-                    backgroundColor = R.color.white;
+                    if(dataInt > 400)
+                        backgroundColor = R.color.white;
                     break;
                 case 5:
                 case 6:
-                    backgroundColor = R.color.yellow;
+                    if(dataInt != 500 && dataInt != 600)
+                        backgroundColor = R.color.yellow;
                     break;
                 default:
             }
         }else{ //含字母
-
             String hundedStr = data.substring(0,1);
             String postTwoStr = data.substring(1,3);
             int hundredInt = BellUtils.str2Int(hundedStr);
