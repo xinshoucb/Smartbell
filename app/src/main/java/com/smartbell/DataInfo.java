@@ -82,13 +82,15 @@ public class DataInfo {
             int hundredInt = dataInt / 100;
             switch (hundredInt){
                 case 2:
-                    backgroundColor = R.color.blue;
+                    if(dataInt > 200){
+                        backgroundColor = R.color.blue;
+                    }
                     break;
                 case 3:
                     int tenInt = (dataInt - hundredInt * 100) / 10;
                     if(dataInt > 300 && dataInt < 330){
                         backgroundColor = R.color.white;
-                    }else if(dataInt >= 330 && dataInt < 340){
+                    }else if(dataInt >= 330){
                         backgroundColor = R.color.blue;
                     }else{
                         backgroundColor = R.color.green;
