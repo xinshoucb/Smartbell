@@ -15,7 +15,7 @@ public class ViewManager {
 
     private int rollingCnt = 0;
 
-    private final static int SHOW_VIEW_COUNT_MAX = 6;
+    private final static int SHOW_VIEW_COUNT_MAX = 12;
 
     private LayoutItemViewHolder[] mViewHolders = new LayoutItemViewHolder[SHOW_VIEW_COUNT_MAX];
     private ArrayList<DataInfo> curShowDatas = new ArrayList<DataInfo>();
@@ -108,6 +108,8 @@ public class ViewManager {
 
     }
 
+    private static final int LINE_COUNT = 3;
+    private static final int COUNT_PER_LINE = SHOW_VIEW_COUNT_MAX / LINE_COUNT;
     private void layoutView(int showViewCount) {
         curShowViewCount = showViewCount;
 
@@ -121,14 +123,22 @@ public class ViewManager {
             mViewHolders[i].getIndexTv().setVisibility(View.INVISIBLE);
         }
 
-        if (3 >= curShowViewCount) {
+        if (COUNT_PER_LINE >= curShowViewCount) {
             layoutView(layoutInitX, layoutInitY, layoutInitWidth, layoutInitHeight, 1, curShowViewCount);
-        } else if (6 >= curShowViewCount) {
+        } else if (COUNT_PER_LINE * 2 >= curShowViewCount) {
             int viewHeght = (layoutInitHeight - gap) / 2;
 
-            layoutView(layoutInitX, layoutInitY, layoutInitWidth, viewHeght, 1, 3);
+            layoutView(layoutInitX, layoutInitY, layoutInitWidth, viewHeght, 1, COUNT_PER_LINE);
 
-            layoutView(layoutInitX, layoutInitY + (gap + viewHeght), layoutInitWidth, viewHeght, 2, curShowViewCount - 3);
+            layoutView(layoutInitX, layoutInitY + (gap + viewHeght), layoutInitWidth, viewHeght, 2, curShowViewCount - COUNT_PER_LINE);
+        } else if (COUNT_PER_LINE * 3 >= curShowViewCount) {
+            int viewHeght = (layoutInitHeight - 2*gap) / 3;
+
+            layoutView(layoutInitX, layoutInitY, layoutInitWidth, viewHeght, 1, COUNT_PER_LINE);
+
+            layoutView(layoutInitX, layoutInitY + (gap + viewHeght), layoutInitWidth, viewHeght, 2, COUNT_PER_LINE);
+
+            layoutView(layoutInitX, layoutInitY + 2* (gap + viewHeght), layoutInitWidth, viewHeght, 3, curShowViewCount - 2* COUNT_PER_LINE);
         }
 
     }
@@ -138,7 +148,7 @@ public class ViewManager {
         int viewHeight = heightSum;
 
         View viewTmp = null;
-        int offset = 3 * (level - 1);
+        int offset = COUNT_PER_LINE * (level - 1);
         for (int i = 0; i < viewCount; i++) {
             viewTmp = mViewHolders[i + offset].getLayoutItem();
 

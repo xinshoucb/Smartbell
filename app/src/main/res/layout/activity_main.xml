@@ -51,6 +51,37 @@
         android:layout_toRightOf="@id/item_5"
         layout="@layout/layout_item"
         android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_7"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_8"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_9"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_10"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_11"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/item_12"
+        layout="@layout/layout_item"
+        android:visibility="gone" />
+
 <!-- 5S solucoes -->
     <TextView
         android:id="@+id/logo_tv"

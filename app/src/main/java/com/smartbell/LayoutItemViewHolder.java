@@ -6,7 +6,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class LayoutItemViewHolder {
-    private int[] viewsId = {R.id.item_1, R.id.item_2, R.id.item_3, R.id.item_4, R.id.item_5, R.id.item_6};
+    private int[] viewsId = {R.id.item_1, R.id.item_2, R.id.item_3, R.id.item_4, R.id.item_5, R.id.item_6
+    ,R.id.item_7, R.id.item_8, R.id.item_9, R.id.item_10, R.id.item_11, R.id.item_12};
 
 
     private RelativeLayout layoutItem;
