@@ -29,7 +29,8 @@ public class DataManager {
             } else if ("+".equals(ctrlStr)) {
                 // flashData(bellStr);
             } else if ("-".equals(ctrlStr)) {
-                cancelData(bellStr);
+//                cancelData(bellStr);
+                cancelData();
             }
 
             Log.d("chenbo", TAG + "ctrlStr = " + ctrlStr + " bellStr = " + bellStr + " dataStr = " + dataStr);
@@ -57,6 +58,13 @@ public class DataManager {
 
         if(postion < mDataList.size() && postion >= 0){
             mDataList.remove(postion);
+            mCallBack.refreshView(mDataList);
+        }
+    }
+
+    private void cancelData() {
+        if(0 < mDataList.size()){
+            mDataList.remove(0);
             mCallBack.refreshView(mDataList);
         }
     }
