@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             // TODO Auto-generated method stub
-            Log.d("chenbo", "activity Service Connected ");
+            Log.d("chenbo", "activity Service Connected "+mDataManager.getDataServiceCallBack());
             mDataService = ((DataService.MsgBinder) service).getService();
             mDataService.setCallBack(mDataManager.getDataServiceCallBack());
         }
@@ -117,6 +117,10 @@ public class MainActivity extends Activity {
         Log.d("chenbo", "activity onResume ");
         Intent intent = new Intent(this, DataService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
+
+        if(mDataService != null){
+            mDataService.setCallBack(mDataManager.getDataServiceCallBack());
+        }
     }
 
     public int getLevel() {

@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 public class DataManager {
     private final static String TAG = "DataManager == ";
-    private final static int DATA_COUNT_MAX = 20;
+    private final static int DATA_COUNT_MAX = 80;
 
     private MainActivity mAc;
     private CallBack mCallBack;
 
-    private final static ArrayList<DataInfo> mDataList = new ArrayList<DataInfo>(DATA_COUNT_MAX);
+    private final ArrayList<DataInfo> mDataList = new ArrayList<DataInfo>(DATA_COUNT_MAX);
 
     private DataService.CallBack dataServiceCallBack = new DataService.CallBack() {
 

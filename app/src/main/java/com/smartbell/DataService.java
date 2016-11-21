@@ -78,7 +78,15 @@ public class DataService extends Service {
             return;
 
         if (mCallBack == null) {
-            startMainActivity();
+            isStop = true;
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startMainActivity();
+                    connectAndGetData();
+                }
+            },1000);
         } else {
             mCallBack.updateData(new String(data));
             data = null;
@@ -120,7 +128,7 @@ public class DataService extends Service {
             public void run() {
                 synchronized (mLock) { 
                     isStop = false;
-                    Looper.prepare();
+//                    Looper.prepare();
 
                     try {
                         Log.d("chenbo", TAG + "accept before ");
@@ -204,7 +212,7 @@ public class DataService extends Service {
     }
 
     int count = 0;
-    String[] testData = {"#334","#201","#2d2","#200","#2d0","#2d5","#300","#500","#600","#400","#336","#359"};//, "#2d2", "#303", "#334", "#405", "#506", "-2d2", "-334", "#603", "#702", "-405", "-506", "#aa6", "#A23", "#d02", "-702", "-702"};
+    String[] testData = {"#334","#201","#2d2","#2d2","#200","#2d0","#2d5","#300","#500","#600","#400","#336","#359","-000"};//, "#2d2", "#303", "#334", "#405", "#506", "-2d2", "-334", "#603", "#702", "-405", "-506", "#aa6", "#A23", "#d02", "-702", "-702"};
 
     private void testData() {
 

@@ -68,11 +68,12 @@ public class DataInfo {
         this.backgroundColor = backgroundColor;
     }
 
+    private boolean isCustomColor = false;
     private void initColorByData(){
         textColor = Color.BLACK;
         backgroundColor = R.color.green;  //default value
 
-        if(data == null){
+        if(!isCustomColor || data == null){
             return;
         }
 
