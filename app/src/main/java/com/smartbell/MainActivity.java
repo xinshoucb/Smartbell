@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -24,19 +23,13 @@ public class MainActivity extends Activity {
 
     private final static String SERVICE_NAME = "com.smartbell.DataService";
 
-    private int level = 1;
-
-    private int rollingTime = 5;
-    private int sleepTimeLevel = 2;
     private int greenShowTime = 5;
     private int yellowShowTime = 5;
-    private int redShowTime = 5;
 
     private DataManager mDataManager;
-    private ViewManager mViewManager;
+    private ToyotaViewManager mViewManager;
 
     private SharedPreferences sharedPreferences;
-    private final String[] multiChoiceItems = {"Level 1", "Level 2", "Level 3", "Level 4"};
 
     private SettingDialog mSettingDialog;
 
@@ -52,14 +45,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_toyota);
         sharedPreferences = getSharedPreferences("bell", Context.MODE_PRIVATE);
         initSetValue();
 
         BellUtils.init(this);
 
         mDataManager = new DataManager(this, mDataManagerCallBack);
-        mViewManager = new ViewManager(this);
+        mViewManager = new ToyotaViewManager(this);
 
         final String initData = getIntent().getStringExtra("initData");
         findViewById(R.id.rootView).post(new Runnable() {
@@ -95,10 +88,9 @@ public class MainActivity extends Activity {
         startService(intent);
     }
 
-    private void showDialog() {
-
+    public void showSettingDialog(int index) {
         if (mSettingDialog == null) {
-            mSettingDialog = new SettingDialog(this);
+            mSettingDialog = new SettingDialog(this, index);
         }
 
         mSettingDialog.show();
@@ -148,23 +140,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-        saveSetValue("level", level);
-    }
-
-    public int getRollingTime() {
-        return rollingTime;
-    }
-
-    public int getSleepTimeLevel() {
-        return sleepTimeLevel;
-    }
-
     public int getGreenShowTime() {
         return greenShowTime;
     }
@@ -173,76 +148,15 @@ public class MainActivity extends Activity {
         return yellowShowTime;
     }
 
-    public int getRedShowTime() {
-        return redShowTime;
-    }
-
-    public void setSleepTimeLevel(int sleepTimeLevel) {
-        this.sleepTimeLevel = sleepTimeLevel;
-        saveSetValue("sleepTimeLevel", sleepTimeLevel);
-    }
-
-    public void setGreenShowTime(int greenShowTime) {
-        this.greenShowTime = greenShowTime;
-        saveSetValue("green_show_time", greenShowTime);
-    }
-
-    public void setYellowShowTime(int yellowShowTime) {
-        this.yellowShowTime = yellowShowTime;
-        saveSetValue("yellow_show_time", yellowShowTime);
-    }
-
-    public void setRedShowTime(int redShowTime) {
-        this.redShowTime = redShowTime;
-        saveSetValue("red_show_time", redShowTime);
-    }
-
-    public void setRollingTime(int rollingTime) {
-        this.rollingTime = rollingTime;
-        saveSetValue("rolling_time", rollingTime);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        int tmpLevel = 0;
-
-        switch (itemId) {
-            case R.id.action_level_1:
-                tmpLevel = 1;
-                break;
-            case R.id.action_level_2:
-                tmpLevel = 2;
-                break;
-            case R.id.action_level_3:
-                tmpLevel = 3;
-                break;
-            case R.id.action_level_4:
-                tmpLevel = 4;
-                break;
-            default:
-                break;
-        }
-
-        showDialog();
+        showSettingDialog(-1);
         return super.onOptionsItemSelected(item);
     }
 
-    // "level"
-    private void saveSetValue(String key, int level) {
-        Editor editor = sharedPreferences.edit();
-        editor.putInt(key, level);
-        editor.commit();
-    }
-
     private void initSetValue() {
-        level = sharedPreferences.getInt("level", 1);
-        rollingTime = sharedPreferences.getInt("rolling_time", 10);
-        sleepTimeLevel = sharedPreferences.getInt("sleepTimeLevel", 2);
-
         greenShowTime = sharedPreferences.getInt("green_show_time", 5);
         yellowShowTime = sharedPreferences.getInt("yellow_show_time", 5);
-        redShowTime = sharedPreferences.getInt("red_show_time", 5);
     }
 
     @Override
@@ -251,7 +165,7 @@ public class MainActivity extends Activity {
         boolean rnt = true;
 
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            showDialog();
+            showSettingDialog(-1);
         } else {
             rnt = super.onKeyDown(keyCode, event);
         }
@@ -260,7 +174,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.dialog, menu);
         return true;
     }
 

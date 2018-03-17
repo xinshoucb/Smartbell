@@ -77,6 +77,7 @@ public class DataManager {
         }
 
         if (dataSize > 0 && isContains(dataStr) >= 0) {
+            Log.d(TAG, "data duplicate， dataStr = " + dataStr);
             return;
         }
 
