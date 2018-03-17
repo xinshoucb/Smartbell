@@ -7,7 +7,7 @@
     tools:context="com.smartbell.ui.ToyotaActivity">
 
     <TextView
-        android:id="@+id/logo_tv"
+        android:id="@+id/toyota_logo_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:ellipsize="marquee"
@@ -20,7 +20,7 @@
         android:textSize="100dp" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv"
+        android:id="@+id/toyota_data_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
