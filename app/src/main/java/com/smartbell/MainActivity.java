@@ -77,6 +77,10 @@ public class MainActivity extends Activity {
         mSettingDialog.show();
     }
 
+    public void notifyBackgroudColorChange(int index){
+        mViewManager.notifyBackgroudColorChange(index);
+    }
+
     private DataService mDataService;
 
     ServiceConnection conn = new ServiceConnection() {

@@ -4,6 +4,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.smartbell.bean.ItemConfig;
+import com.smartbell.db.DBManager;
+
 import java.util.ArrayList;
 
 public class ToyotaViewManager {
@@ -56,6 +59,16 @@ public class ToyotaViewManager {
         refreshView(curShowDatas);
     }
 
+    public void notifyBackgroudColorChange(int index) {
+        if (null != curShowDatas && index >= 0 && curShowDatas.size() > index){
+            ItemConfig itemConfig = DBManager.getItemConfig(index);
+            if (itemConfig != null) {
+                mViewHolders[index].setItemConfig(itemConfig);
+                mViewHolders[index].refreshView();
+            }
+        }
+    }
+
     public void refreshView() {
         refreshView(curShowDatas);
     }
@@ -78,11 +91,13 @@ public class ToyotaViewManager {
             for (int i = 0; i < showViewCount; i++) {
                 mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeSmall));
                 mViewHolders[i].setData(curShowDatas.get(i));
+                if (curShowDatas.get(i).getStartTime() == 0){
+                    curShowDatas.get(i).setStartTime(System.currentTimeMillis());
+                }
             }
         } else {
             logoTv.setVisibility(View.VISIBLE);
         }
-
     }
 
 }

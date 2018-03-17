@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.smartbell.bean.ItemConfig;
+import com.smartbell.db.DBManager;
 
 public class ToyotaLayoutItemViewHolder {
     private int[] lineLayoutId = {R.id.layout_line_item1, R.id.layout_line_item2, R.id.layout_line_item3, R.id.layout_line_item4, R.id.layout_line_item5};
@@ -17,10 +18,13 @@ public class ToyotaLayoutItemViewHolder {
     private TextView contentTv;
     private TextView indexTv;
     private DataInfo setDataInfo;
-    private ItemConfig itemConfig = new ItemConfig();
+    private ItemConfig itemConfig;
 
     public ToyotaLayoutItemViewHolder(final Activity mAc, final int index) {
-        itemConfig.index = index;
+        itemConfig = DBManager.getItemConfigHasDefault(index);
+        if (itemConfig == null) {
+            itemConfig = new ItemConfig();
+        }
         LinearLayout linearLayout = (LinearLayout) mAc.findViewById(lineLayoutId[index/4]);
         layoutItem = (RelativeLayout) linearLayout.findViewById(viewsId[index%4]);
 
@@ -89,10 +93,10 @@ public class ToyotaLayoutItemViewHolder {
         int showTimeSec = (int) ((System.currentTimeMillis() - setDataInfo.getStartTime()) / 1000);
 
         if(itemConfig.oneTimeSec > 0 ){
-            if (showTimeSec > itemConfig.oneTimeSec){
-                rtnColor = itemConfig.twoColor;
-            }else if(itemConfig.twoTimeSec > 0 && showTimeSec > (itemConfig.oneTimeSec+itemConfig.twoTimeSec)){
+            if(itemConfig.twoTimeSec > 0 && showTimeSec > (itemConfig.oneTimeSec+itemConfig.twoTimeSec)){
                 rtnColor = itemConfig.thrColor;
+            }else if (showTimeSec > itemConfig.oneTimeSec){
+                rtnColor = itemConfig.twoColor;
             }
         }
 

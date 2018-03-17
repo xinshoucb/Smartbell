@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.smartbell.bean.ItemConfig;
 import com.smartbell.db.DBManager;
 
-import io.realm.Realm;
-
 public class SettingDialog extends Dialog {
 
     private MainActivity mAC;
@@ -71,6 +69,12 @@ public class SettingDialog extends Dialog {
         super.show();
         Log.d("chenbo", "SettingDialog  +++ show index="+index);
         readDataFromDB();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        mAC.notifyBackgroudColorChange(index);
     }
 
     OnSeekBarChangeListener seekListener = new OnSeekBarChangeListener() {
