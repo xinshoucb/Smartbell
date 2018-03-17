@@ -20,4 +20,21 @@ public class ItemConfig extends RealmObject {
     public int oneTimeSec = 0;
     public int twoTimeSec = 0;
     public int thrTimeSec = 0;
+
+    public ItemConfig copySelf(){
+        ItemConfig rtnObject = new ItemConfig();
+
+        rtnObject.index = index;
+
+        rtnObject.oneColor = oneColor;
+        rtnObject.twoColor = twoColor;
+        rtnObject.thrColor = thrColor;
+
+        rtnObject.oneTimeSec = oneTimeSec;
+        rtnObject.twoTimeSec = twoTimeSec;
+        rtnObject.thrTimeSec = thrTimeSec;
+
+
+        return rtnObject;
+    }
 }

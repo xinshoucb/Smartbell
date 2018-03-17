@@ -7,6 +7,11 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.smartbell.bean.ItemConfig;
+import com.smartbell.db.DBManager;
+
+import io.realm.Realm;
+
 public class SettingDialog extends Dialog {
 
     private MainActivity mAC;
@@ -23,12 +28,19 @@ public class SettingDialog extends Dialog {
     private int mYellowProgress;
     private int initYellowProgress = 5;
 
+    private int index = 0;
 
-    public SettingDialog(MainActivity mAC, int index) {
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public SettingDialog(MainActivity mAC) {
         super(mAC, R.style.dialog);
-        // TODO Auto-generated constructor stub
         this.mAC = mAC;
-        Log.d("chenbo", "SettingDialog  +++ SettingDialog");
     }
 
     @Override
@@ -43,7 +55,6 @@ public class SettingDialog extends Dialog {
     }
 
     private void initView() {
-
         //green
         mGreenSeekBar = (SeekBar) findViewById(R.id.green_dlg_seerbar);
         mGreenSeekBar.setOnSeekBarChangeListener(seekListener);
@@ -58,19 +69,15 @@ public class SettingDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-        Log.d("chenbo", "SettingDialog  +++ show");
-        mGreenProgress = initGreenProgress = 120;// mAC.getGreenShowTime();
-        mYellowProgress = initYellowProgress = 120;//mAC.getYellowShowTime();
-        mGreenSeekBar.setProgress(initGreenProgress);
-        mYellowSeekBar.setProgress(initYellowProgress);
+        Log.d("chenbo", "SettingDialog  +++ show index="+index);
+        readDataFromDB();
     }
 
     OnSeekBarChangeListener seekListener = new OnSeekBarChangeListener() {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            // TODO Auto-generated method stub
-
+            saveDataToDB();
         }
 
         @Override
@@ -104,6 +111,26 @@ public class SettingDialog extends Dialog {
     private void setYellowProgress(int progress) {
         mYellowProgress = progress;
         mYellowTimeTv.setText(mYellowProgress + "Sec");
+    }
+
+    private void saveDataToDB() {
+        DBManager.setItemConfigAndDefault(index,mGreenProgress,mYellowProgress);
+    }
+
+    private void readDataFromDB(){
+        ItemConfig itemConfig = DBManager.getItemConfigHasDefault(index);
+        if (itemConfig != null && itemConfig.isValid()) {
+            mGreenProgress = initGreenProgress = itemConfig.oneTimeSec;
+            mYellowProgress = initYellowProgress = itemConfig.twoTimeSec;
+        }else {
+            mGreenProgress = initGreenProgress = 0;
+            mYellowProgress = initYellowProgress = 0;
+        }
+
+        mGreenSeekBar.setProgress(initGreenProgress);
+        mYellowSeekBar.setProgress(initYellowProgress);
+        setGreenProgress(initGreenProgress);
+        setYellowProgress(initYellowProgress);
     }
 
 }

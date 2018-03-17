@@ -33,6 +33,7 @@ public class ToyotaViewManager {
         logoTv = (TextView) mAc.findViewById(R.id.logo_tv);
         BellUtils.setAntiAliasFlag(logoTv);
         logoTv.setSelected(true);
+        logoTv.setClickable(true);
 
         mRootView = (RelativeLayout) mAc.findViewById(R.id.rootView);
 

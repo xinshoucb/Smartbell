@@ -62,26 +62,6 @@ public class MainActivity extends Activity {
                 mViewManager.initParam();
                 if (initData != null) mDataManager.getDataServiceCallBack().updateData(initData);
 
-                Realm realm = Realm.getDefaultInstance();
-
-                try {
-                    realm.executeTransaction(new Realm.Transaction() {
-
-                        @Override
-                        public void execute(Realm realm) {
-                            ItemConfig config = realm.createObject(ItemConfig.class);
-                            config.index = 19;
-                        }
-                    });
-
-
-                    ItemConfig itemConfig = realm.where(ItemConfig.class).equalTo("index", 19).findFirst();
-
-                    Log.d("realm","index="+itemConfig.index+" oneColor="+itemConfig.oneColor);
-                } finally {
-                    realm.close();
-                }
-
             }
         });
         Intent intent = new Intent(this, DataService.class);
@@ -90,8 +70,9 @@ public class MainActivity extends Activity {
 
     public void showSettingDialog(int index) {
         if (mSettingDialog == null) {
-            mSettingDialog = new SettingDialog(this, index);
+            mSettingDialog = new SettingDialog(this);
         }
+        mSettingDialog.setIndex(index);
 
         mSettingDialog.show();
     }
