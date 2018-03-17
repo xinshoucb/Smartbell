@@ -85,15 +85,19 @@ public class ToyotaViewManager {
         if (dataCount > 0) {
             logoTv.setVisibility(View.GONE);
 
-            int showViewCount = Math.max(Math.min(SHOW_VIEW_COUNT_MAX, dataCount), 0);
-
             // fill view
-            for (int i = 0; i < showViewCount; i++) {
-                mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeSmall));
-                mViewHolders[i].setData(curShowDatas.get(i));
-                if (curShowDatas.get(i).getStartTime() == 0){
-                    curShowDatas.get(i).setStartTime(System.currentTimeMillis());
+            for (int i = 0; i < SHOW_VIEW_COUNT_MAX; i++) {
+                if(i < dataCount){
+                    mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeSmall));
+                    mViewHolders[i].setData(curShowDatas.get(i));
+                    if (curShowDatas.get(i).getStartTime() == 0){
+                        curShowDatas.get(i).setStartTime(System.currentTimeMillis());
+                    }
+                }else{
+                    mViewHolders[i].setData(null);
                 }
+
+                //clean shuju
             }
         } else {
             logoTv.setVisibility(View.VISIBLE);

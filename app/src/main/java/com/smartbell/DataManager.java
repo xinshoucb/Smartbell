@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class DataManager {
     private final static String TAG = "DataManager == ";
-    private final static int DATA_COUNT_MAX = 80;
+    private final static int DATA_COUNT_MAX = 200;
 
     private MainActivity mAc;
     private CallBack mCallBack;

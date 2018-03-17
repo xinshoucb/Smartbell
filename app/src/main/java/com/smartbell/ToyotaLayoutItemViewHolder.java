@@ -48,11 +48,19 @@ public class ToyotaLayoutItemViewHolder {
     }
 
     public void refreshView() {
-        contentTv.setTextColor(setDataInfo.getTextColor());
-        layoutItem.setBackgroundColor(Color.parseColor(getBackgroudColor()));
+        if (setDataInfo != null) {
+            contentTv.setTextColor(setDataInfo.getTextColor());
+            layoutItem.setBackgroundColor(Color.parseColor(getBackgroudColor()));
 
-        contentTv.setText(setDataInfo.getData());
-        contentTv.clearAnimation();
+            contentTv.setText(setDataInfo.getData());
+            contentTv.clearAnimation();
+        }else{
+            contentTv.setTextColor(Color.RED);
+            layoutItem.setBackgroundColor(Color.BLACK);
+
+            contentTv.setText("---");
+            contentTv.clearAnimation();
+        }
     }
 
     public RelativeLayout getLayoutItem() {
