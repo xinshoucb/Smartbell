@@ -14,7 +14,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.smartbell.bean.ItemConfig;
+
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class MainActivity extends Activity {
 
@@ -64,6 +68,27 @@ public class MainActivity extends Activity {
             public void run() {
                 mViewManager.initParam();
                 if (initData != null) mDataManager.getDataServiceCallBack().updateData(initData);
+
+                Realm realm = Realm.getDefaultInstance();
+
+                try {
+                    realm.executeTransaction(new Realm.Transaction() {
+
+                        @Override
+                        public void execute(Realm realm) {
+                            ItemConfig config = realm.createObject(ItemConfig.class);
+                            config.index = 19;
+                        }
+                    });
+
+
+                    ItemConfig itemConfig = realm.where(ItemConfig.class).equalTo("index", 19).findFirst();
+
+                    Log.d("realm","index="+itemConfig.index+" oneColor="+itemConfig.oneColor);
+                } finally {
+                    realm.close();
+                }
+
             }
         });
         Intent intent = new Intent(this, DataService.class);

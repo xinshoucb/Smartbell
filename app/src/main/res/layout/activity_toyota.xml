@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.smartbell.ui.ToyotaActivity">
+
+    <TextView
+        android:id="@+id/logo_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:background="@color/black"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="TOYOTA"
+        android:textColor="@color/green"
+        android:textSize="100dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</RelativeLayout>
