@@ -87,8 +87,8 @@ public class ToyotaViewManager {
 
             // fill view
             for (int i = 0; i < SHOW_VIEW_COUNT_MAX; i++) {
+                mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeSmall));
                 if(i < dataCount){
-                    mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeSmall));
                     mViewHolders[i].setData(curShowDatas.get(i));
                     if (curShowDatas.get(i).getStartTime() == 0){
                         curShowDatas.get(i).setStartTime(System.currentTimeMillis());
