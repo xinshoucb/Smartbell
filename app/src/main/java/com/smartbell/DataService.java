@@ -67,7 +67,7 @@ public class DataService extends Service {
     private String praseData(String data) {
         int lenght = data.length();
 //		String rtn = data.substring(lenght - 19, lenght - 16);
-        String rtn = data.substring(lenght - 20, lenght - 16);
+        String rtn = data.substring(lenght - 20, lenght - 15);
         Log.d("chenbo", TAG + "praseData rtn = " + rtn);
         return rtn;
     }
@@ -97,6 +97,7 @@ public class DataService extends Service {
     public void onCreate() {
         // TODO Auto-generated method stub
         Log.d("chenbo", TAG + " onCreate ");
+        LogView.setLog(TAG + " onCreate ");
         super.onCreate();
 
         if (null == server) {
@@ -109,6 +110,7 @@ public class DataService extends Service {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 Log.d("chenbo", TAG + "new ServerSocket failed : " + e.toString());
+                LogView.setLog(TAG + "new ServerSocket failed : " + e.toString());
                 stopSelf();
                 e.printStackTrace();
             }
@@ -132,8 +134,10 @@ public class DataService extends Service {
 
                     try {
                         Log.d("chenbo", TAG + "accept before ");
+                        LogView.setLog(TAG + "accept before");
                         Socket socket = server.accept();
                         Log.d("chenbo", TAG + "accept after");
+                        LogView.setLog(TAG + "accept after");
 
                         BufferedReader reader = null;
                         DataOutputStream writer = null;
@@ -161,6 +165,7 @@ public class DataService extends Service {
                                 }
                             }
 
+                            LogView.setLog(TAG +  "content = " + content + " bufLenght = " + bufLenght);
                             Log.d("chenbo", TAG + "content = " + content + " bufLenght = " + bufLenght);
                             if (!content.equals("")) {
                                 handler.removeMessages(HANDLER_REACCEPT);
@@ -168,7 +173,7 @@ public class DataService extends Service {
                                 if ((bufLenght == 4) || (bufLenght == 46)) {
 
                                 } else {
-                                    Log.d("chenbo", TAG + "���ݴ��� bufLenght = " + bufLenght);
+                                    Log.d("chenbo", TAG + " bufLenght = " + bufLenght);
                                     continue;
                                 }
 
@@ -200,6 +205,7 @@ public class DataService extends Service {
                     } catch (Exception e) {
                         handler.sendEmptyMessage(HANDLER_REACCEPT);
                         Log.d("chenbo", TAG + "IOException " + e.toString());
+                        LogView.setLog(TAG + "IOException " + e.toString());
                         e.printStackTrace();
                     } finally {
                         isStop = true;

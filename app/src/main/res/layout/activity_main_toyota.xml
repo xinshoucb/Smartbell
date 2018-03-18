@@ -65,4 +65,17 @@
         android:textColor="@color/green"
         android:textSize="100dp" />
 
+    <ScrollView
+        android:layout_alignParentEnd="true"
+        android:layout_width="280dp"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/log_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/log_backgroud"/>
+    </ScrollView>
+
+
+
 </RelativeLayout>

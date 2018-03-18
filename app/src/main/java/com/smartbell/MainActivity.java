@@ -12,12 +12,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.smartbell.bean.ItemConfig;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
 
 public class MainActivity extends Activity {
 
@@ -47,6 +44,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_toyota);
         sharedPreferences = getSharedPreferences("bell", Context.MODE_PRIVATE);
+
+        LogView.setLogView((TextView) findViewById(R.id.log_tv));
         initSetValue();
 
         BellUtils.init(this);
@@ -89,6 +88,7 @@ public class MainActivity extends Activity {
         public void onServiceDisconnected(ComponentName name) {
             // TODO Auto-generated method stub
             Log.d("chenbo", "activity onServiceDisconnected ");
+            LogView.setLog("activity -> data service onServiceDisconnected");
             mDataService.removeCallBack();
         }
 
@@ -96,6 +96,7 @@ public class MainActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             // TODO Auto-generated method stub
             Log.d("chenbo", "activity Service Connected "+mDataManager.getDataServiceCallBack());
+            LogView.setLog("activity -> data service Connected");
             mDataService = ((DataService.MsgBinder) service).getService();
             mDataService.setCallBack(mDataManager.getDataServiceCallBack());
         }

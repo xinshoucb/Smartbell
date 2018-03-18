@@ -33,6 +33,7 @@ public class DataManager {
                 cancelData();
             }
 
+            LogView.setLog(TAG + "ctrlStr = " + ctrlStr + " bellStr = " + bellStr + " dataStr = " + dataStr);
             Log.d("chenbo", TAG + "ctrlStr = " + ctrlStr + " bellStr = " + bellStr + " dataStr = " + dataStr);
         }
 

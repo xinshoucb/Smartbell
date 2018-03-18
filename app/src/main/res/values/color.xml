@@ -16,5 +16,7 @@
     <color name="red">#ff0000</color>
     <color name="black">#000000</color>
 
+    <color name="log_backgroud">#99aaaaaa</color>
+
     <color name="stroke">#000000</color>
 </resources>
