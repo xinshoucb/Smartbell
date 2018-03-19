@@ -31,6 +31,7 @@ public class ViewManager {
     private float textSizeMid = 0;
     private float textSizeSmall = 0;
 
+    private RelativeLayout logoLayout;
     private TextView logoTv;
     private RelativeLayout mRootView;
 
@@ -44,6 +45,7 @@ public class ViewManager {
     }
 
     private void initView() {
+        logoLayout = (RelativeLayout) mAc.findViewById(R.id.logo_layout);
         logoTv = (TextView) mAc.findViewById(R.id.logo_tv);
         BellUtils.setAntiAliasFlag(logoTv);
         logoTv.setSelected(true);
@@ -88,7 +90,7 @@ public class ViewManager {
 
         // show logo page when there is no data
         if (dataCount > 0) {
-            logoTv.setVisibility(View.GONE);
+            logoLayout.setVisibility(View.GONE);
 
             int showViewCount = Math.max(Math.min(SHOW_VIEW_COUNT_MAX, dataCount), 0);
 
@@ -103,7 +105,7 @@ public class ViewManager {
                 mViewHolders[i].setData(curShowDatas.get(i));
             }
         } else {
-            logoTv.setVisibility(View.VISIBLE);
+            logoLayout.setVisibility(View.VISIBLE);
         }
 
     }
