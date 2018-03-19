@@ -7,18 +7,17 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,15 +53,20 @@ public class DataService extends Service {
                     noticeActivity();
                     break;
                 case HANDLER_REACCEPT:
-                    isStop = true;
-                    Log.i(TAG, "chenbo reaccept");
-                    connectAndGetData();
+                    if(msg.arg1 == 1){
+                        connectAndGetData();
+                    }else if(msg.arg1 == 0){
+                        isStop = true;
+                    }
+                    Log.i(TAG, "reaccept = "+msg.arg1);
+                    LogView.setLog(TAG + "reaccept = "+msg.arg1);
                     break;
                 default:
                     break;
             }
         }
     };
+    private String tag = "chenbo";
 
     private String praseData(String data) {
         int lenght = data.length();
@@ -73,7 +77,7 @@ public class DataService extends Service {
     }
 
     private void noticeActivity() {
-        Log.d("chenbo", TAG + "noticeActivity mCallBack = " + mCallBack);
+        Log.d(tag, TAG + "noticeActivity mCallBack = " + mCallBack);
         if (data == null)
             return;
 
@@ -96,12 +100,11 @@ public class DataService extends Service {
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
-        Log.d("chenbo", TAG + " onCreate ");
-        LogView.setLog(TAG + " onCreate ");
+        Log.d(tag, TAG + " onCreate ");
         super.onCreate();
 
         if (null == server) {
-            Log.d("chenbo", TAG + "server == null");
+            Log.d(tag, TAG + "server == null");
             try {
                 // server = new ServerSocket(PORT);
                 server = new ServerSocket();
@@ -109,7 +112,7 @@ public class DataService extends Service {
                 server.bind(new InetSocketAddress(PORT));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                Log.d("chenbo", TAG + "new ServerSocket failed : " + e.toString());
+                Log.d(tag, TAG + "new ServerSocket failed : " + e.toString());
                 LogView.setLog(TAG + "new ServerSocket failed : " + e.toString());
                 stopSelf();
                 e.printStackTrace();
@@ -133,78 +136,103 @@ public class DataService extends Service {
 //                    Looper.prepare();
 
                     try {
-                        Log.d("chenbo", TAG + "accept before ");
-                        LogView.setLog(TAG + "accept before");
+                        Log.d(tag, TAG + "accept before ");
                         Socket socket = server.accept();
-                        Log.d("chenbo", TAG + "accept after");
+                        Log.d(tag, TAG + "accept after");
                         LogView.setLog(TAG + "accept after");
 
-                        BufferedReader reader = null;
+                        BufferedInputStream reader = null;
                         DataOutputStream writer = null;
                         InputStream is = socket.getInputStream();
 
                         int bufLenght = 0;
-                        char[] buf = null;
+                        byte[] buf = null;
 
-                        reader = new BufferedReader(new InputStreamReader(is));
+                        reader = new BufferedInputStream(is);
                         String content = null;
+
                         while (!isStop) {
                             content = "";
+                            ArrayList<String> contents = new ArrayList<String>();
                             bufLenght = is.available();
                             if (bufLenght > 0) {
-                                buf = new char[bufLenght];
-                                reader.read(buf);
-                                if (4 == buf.length) {
-                                    for (int i = 1; i < bufLenght; i++) {
-                                        content += buf[i];
-                                    }
-                                } else {
-                                    for (int i = 0; i < bufLenght; i++) {
-                                        content += buf[i];
-                                    }
-                                }
-                            }
-
-                            LogView.setLog(TAG +  "content = " + content + " bufLenght = " + bufLenght);
-                            Log.d("chenbo", TAG + "content = " + content + " bufLenght = " + bufLenght);
-                            if (!content.equals("")) {
                                 handler.removeMessages(HANDLER_REACCEPT);
 
-                                if ((bufLenght == 4) || (bufLenght == 46)) {
+                                buf = new byte[bufLenght];
+                                reader.read(buf);
+                                StringBuilder sb = new StringBuilder();
+                                for (int i = 0; i < bufLenght; i++) {
+                                    content += (char)buf[i];
 
-                                } else {
-                                    Log.d("chenbo", TAG + " bufLenght = " + bufLenght);
-                                    continue;
+                                    Log.d(tag, TAG + "buf="+buf[i]+"  "+sb.length());
+                                    if(buf[i] == -1 || buf[i] == 1){
+                                        Log.d(tag, TAG + "buf[i] == -1 || buf[i] == 1  "+sb.length());
+                                        if (sb.length() > 0) {
+                                            contents.add(sb.toString());
+                                            sb = new StringBuilder();
+                                            Log.d(tag, TAG + "create new content");
+                                        }
+                                    }else{
+                                        sb.append((char)buf[i]);
+                                    }
                                 }
 
-                                if (content.equals("ask")) {
-                                    writer = new DataOutputStream(socket.getOutputStream());
-                                    writer.write(0x55);
-                                    writer.write(0x01);
-                                    writer.write(0x00);
-                                    writer.write(0xaa);
-                                    writer.flush();
-                                } else {
-                                    Message msg = Message.obtain();
-                                    msg.what = HANDLER_REFREASH_VIEW;
-                                    msg.obj = content;
-                                    handler.sendMessage(msg);
+                                if (sb.length() > 0) {
+                                    contents.add(sb.toString());
                                 }
-                            } else {
+
+                                Log.d(tag, TAG + "content = " + content + " bufLenght = " + bufLenght+"  "+contents.size());
+
+                                for (String contentStr : contents) {
+                                    Log.d(tag, TAG + "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
+                                    if (!contentStr.equals("")) {
+                                        if ((contentStr.length() == 3) || (contentStr.length() == 44)) {
+                                            Log.d(tag, TAG + "msg bufLenght = " + bufLenght);
+                                        } else {
+                                            Log.d(tag, TAG + "msg mix bufLenght = " + bufLenght);
+                                            continue;
+                                        }
+
+                                        if (contentStr.equals("ask")) {
+                                            writer = new DataOutputStream(socket.getOutputStream());
+                                            writer.write(0x55);
+                                            writer.write(0x01);
+                                            writer.write(0x00);
+                                            writer.write(0xaa);
+                                            writer.flush();
+                                        } else {
+                                            Message msg = Message.obtain();
+                                            msg.what = HANDLER_REFREASH_VIEW;
+                                            msg.obj = contentStr;
+                                            handler.sendMessage(msg);
+                                        }
+                                    } else {
+
+                                    }
+                                }
+                            }else{
                                 if (!handler.hasMessages(HANDLER_REACCEPT)) {
-                                    handler.sendEmptyMessageDelayed(HANDLER_REACCEPT, TIME_OUT);
+                                    Message msg = Message.obtain();
+                                    msg.what = HANDLER_REACCEPT;
+                                    msg.arg1 = 0;
+                                    handler.sendMessageDelayed(msg,TIME_OUT);
                                 }
-                                Thread.sleep(500);
                             }
+
+                            Thread.sleep(500);
                         }
 
                         if (null != writer)
                             writer.close();
                         reader.close();
-                        Log.d("chenbo", TAG + " while end ");
+                        Log.d(tag, TAG + " while end ");
                     } catch (Exception e) {
-                        handler.sendEmptyMessage(HANDLER_REACCEPT);
-                        Log.d("chenbo", TAG + "IOException " + e.toString());
+
+                        Message msg = Message.obtain();
+                        msg.what = HANDLER_REACCEPT;
+                        msg.arg1 = 1;
+                        handler.sendMessageDelayed(msg,1000);
+                        Log.d(tag, TAG + "IOException " + e.toString());
                         LogView.setLog(TAG + "IOException " + e.toString());
                         e.printStackTrace();
                     } finally {
@@ -252,7 +280,7 @@ public class DataService extends Service {
         ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
 
-        Log.d("chenbo", TAG + "pkg:" + cn.getPackageName() + " cls:" + cn.getClassName());
+        Log.d(tag, TAG + "pkg:" + cn.getPackageName() + " cls:" + cn.getClassName());
         if ("com.example.bell_x3.MainActivity".equals(cn.getClassName())) {
             rtn = true;
         }
@@ -261,7 +289,7 @@ public class DataService extends Service {
     }
 
     private void startMainActivity() {
-        Log.d("chenbo", TAG + " start activity ");
+        Log.d(tag, TAG + " start activity ");
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -271,13 +299,13 @@ public class DataService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("chenbo", TAG + " onStartCommand ");
+        Log.d(tag, TAG + " onStartCommand ");
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("chenbo", TAG + " onBind ");
+        Log.d(tag, TAG + " onBind ");
         return binder;
     }
 
@@ -304,7 +332,7 @@ public class DataService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e("chenbo", TAG + " onDestroy ");
+        Log.e(tag, TAG + " onDestroy ");
         super.onDestroy();
     }
 
