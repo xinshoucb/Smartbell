@@ -101,6 +101,7 @@ public class DataService extends Service {
     public void onCreate() {
         // TODO Auto-generated method stub
         Log.d(tag, TAG + " onCreate ");
+        LogView.setLog(TAG + "onCreate");
         super.onCreate();
 
         if (null == server) {
@@ -137,6 +138,7 @@ public class DataService extends Service {
 
                     try {
                         Log.d(tag, TAG + "accept before ");
+                        LogView.setLog(TAG + "accept before");
                         Socket socket = server.accept();
                         Log.d(tag, TAG + "accept after");
                         LogView.setLog(TAG + "accept after");
