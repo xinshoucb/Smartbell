@@ -18,7 +18,7 @@
             android:layout_alignParentLeft="true"
             android:paddingLeft="@dimen/settings_title_padding_left"
             android:gravity="center_vertical"
-            android:text="GREEN TIME : "
+            android:text="Yellow Time : "
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:textColor="@color/holo_blue"
             android:textStyle="bold" />
@@ -56,7 +56,7 @@
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/settings_title_padding_left"
-            android:text="YELLOW TIME : "
+            android:text="Red Time : "
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:textColor="@color/holo_blue"
             android:textStyle="bold" />

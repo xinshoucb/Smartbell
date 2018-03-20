@@ -12,9 +12,18 @@ public class ItemConfig extends RealmObject {
     public int index;
 
     // setBackgroundColor(Color.parseColor("#3FE2C5"));//使用颜色的16进制类型值
-    public String oneColor = "#90EE90";
-    public String twoColor = "#EEEE00";
-    public String thrColor = "#FF4500";
+
+//    #F00000 红色
+//#006600 绿色
+//#003399 蓝色
+//#FFFF00 黄色
+
+//    public String oneColor = "#90EE90";
+//    public String twoColor = "#EEEE00";
+//    public String thrColor = "#FF4500";
+    public String oneColor = "#006600";
+    public String twoColor = "#FFFF00";
+    public String thrColor = "#F00000";
 
     // 0 ~ 999
     public int oneTimeSec = 0;

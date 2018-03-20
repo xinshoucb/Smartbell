@@ -3,6 +3,9 @@ package com.smartbell;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -50,6 +53,17 @@ public class SettingDialog extends Dialog {
         setTitle("Settings");
         initView();
         Log.d("chenbo", "SettingDialog  +++ onCreate");
+
+        setDialogWindowAttr();
+    }
+
+    public void setDialogWindowAttr(){
+        Window window = this.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.gravity = Gravity.CENTER;
+        lp.width = (int) (mAC.getWindowManager().getDefaultDisplay().getWidth() * 0.8);
+//        lp.height = (int) (mAC.getWindowManager().getDefaultDisplay().getHeight() * 0.8);
+        window.setAttributes(lp);
     }
 
     private void initView() {

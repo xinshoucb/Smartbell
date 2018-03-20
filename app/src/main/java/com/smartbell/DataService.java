@@ -30,7 +30,7 @@ public class DataService extends Service {
     private static final int HANDLER_REACCEPT = 1;
     private static final long TIME_OUT = 20 * 1000;
 
-    private static final int PORT = 30001;
+    private static final int PORT = 30006;
     private ServerSocket server;
     private Object mLock = new Object();
 
@@ -38,6 +38,10 @@ public class DataService extends Service {
 
     private boolean isStop = false;
     private String data;
+
+    public static final int ACCEPTTING = 1;
+    public static final int ACCEPTTED = 2;
+    private int serverStatus;
 
     private Handler handler = new Handler() {
         @Override
@@ -53,11 +57,8 @@ public class DataService extends Service {
                     noticeActivity();
                     break;
                 case HANDLER_REACCEPT:
-                    if(msg.arg1 == 1){
-                        connectAndGetData();
-                    }else if(msg.arg1 == 0){
-                        isStop = true;
-                    }
+                    isStop = true;
+                    reConnect();
                     Log.i(TAG, "reaccept = "+msg.arg1);
                     LogView.setLog(TAG + "reaccept = "+msg.arg1);
                     break;
@@ -78,8 +79,9 @@ public class DataService extends Service {
 
     private void noticeActivity() {
         Log.d(tag, TAG + "noticeActivity mCallBack = " + mCallBack);
-        if (data == null)
+        if (data == null) {
             return;
+        }
 
         if (mCallBack == null) {
             isStop = true;
@@ -97,6 +99,8 @@ public class DataService extends Service {
         }
     }
 
+
+
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
@@ -104,24 +108,31 @@ public class DataService extends Service {
         LogView.setLog(TAG + "onCreate");
         super.onCreate();
 
-        if (null == server) {
-            Log.d(tag, TAG + "server == null");
-            try {
-                // server = new ServerSocket(PORT);
-                server = new ServerSocket();
-                server.setReuseAddress(true);
-                server.bind(new InetSocketAddress(PORT));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                Log.d(tag, TAG + "new ServerSocket failed : " + e.toString());
-                LogView.setLog(TAG + "new ServerSocket failed : " + e.toString());
-                stopSelf();
-                e.printStackTrace();
+        reConnect();
+    }
+
+    private void reConnect(){
+        Log.d(tag, TAG + "reConnect server");
+        try {
+            if (null != server) {
+                server.close();
             }
+
+            // server = new ServerSocket(PORT);
+            server = new ServerSocket();
+            server.setReuseAddress(true);
+            server.bind(new InetSocketAddress(PORT));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            Log.d(tag, TAG + "new ServerSocket failed : " + e.toString());
+            LogView.setLog(TAG + "new ServerSocket failed : " + e.toString());
+            stopSelf();
+            e.printStackTrace();
         }
 
         connectAndGetData();
     }
+
 
     private void connectAndGetData() {
         if (TestUtils.isTest) {
@@ -140,8 +151,8 @@ public class DataService extends Service {
                         Log.d(tag, TAG + "accept before ");
                         LogView.setLog(TAG + "accept before");
                         Socket socket = server.accept();
-                        Log.d(tag, TAG + "accept after");
-                        LogView.setLog(TAG + "accept after");
+                        Log.d(tag, TAG + "accept after isStop="+isStop);
+                        LogView.setLog(TAG + "accept after isStop="+isStop);
 
                         BufferedInputStream reader = null;
                         DataOutputStream writer = null;
@@ -216,7 +227,7 @@ public class DataService extends Service {
                                 if (!handler.hasMessages(HANDLER_REACCEPT)) {
                                     Message msg = Message.obtain();
                                     msg.what = HANDLER_REACCEPT;
-                                    msg.arg1 = 0;
+                                    msg.arg1 = 1;
                                     handler.sendMessageDelayed(msg,TIME_OUT);
                                 }
                             }
@@ -224,8 +235,9 @@ public class DataService extends Service {
                             Thread.sleep(500);
                         }
 
-                        if (null != writer)
+                        if (null != writer) {
                             writer.close();
+                        }
                         reader.close();
                         Log.d(tag, TAG + " while end ");
                     } catch (Exception e) {
@@ -246,6 +258,7 @@ public class DataService extends Service {
 
         }).start();
     }
+
 
     int count = 0;
     String[] testData = {"#334","#201","#2d2","#2d2","-2d2",
@@ -335,6 +348,7 @@ public class DataService extends Service {
     @Override
     public void onDestroy() {
         Log.e(tag, TAG + " onDestroy ");
+        isStop = true;
         super.onDestroy();
     }
 

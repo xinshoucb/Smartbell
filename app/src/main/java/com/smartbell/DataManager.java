@@ -29,8 +29,8 @@ public class DataManager {
             } else if ("+".equals(ctrlStr)) {
                 // flashData(bellStr);
             } else if ("-".equals(ctrlStr)) {
-//                cancelData(bellStr);
-                cancelData();
+                cancelData(bellStr);
+//                cancelData();
             }
 
             LogView.setLog(TAG + "ctrlStr = " + ctrlStr + " bellStr = " + bellStr + " dataStr = " + dataStr);
@@ -46,8 +46,9 @@ public class DataManager {
     }
 
     private void cancelData(String bellStr) {
-        if(null == bellStr)
+        if(null == bellStr) {
             return;
+        }
 
         int postion = -1;
         for (int i = 0; i < mDataList.size(); i++) {

@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,13 +41,28 @@ public class MainActivity extends Activity {
 
     };
 
+    public static final int MSG_CHANGE_BACK_COLOR = 1;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_CHANGE_BACK_COLOR:
+                    notifyBackgroudColorChange(-1);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_toyota);
         sharedPreferences = getSharedPreferences("bell", Context.MODE_PRIVATE);
 
-        LogView.setLogView((TextView) findViewById(R.id.log_tv));
+//        LogView.setLogView((TextView) findViewById(R.id.log_tv));
         initSetValue();
 
         BellUtils.init(this);
@@ -59,7 +76,9 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 mViewManager.initParam();
-                if (initData != null) mDataManager.getDataServiceCallBack().updateData(initData);
+                if (initData != null) {
+                    mDataManager.getDataServiceCallBack().updateData(initData);
+                }
 
             }
         });
@@ -77,7 +96,13 @@ public class MainActivity extends Activity {
     }
 
     public void notifyBackgroudColorChange(int index){
+        if (index < 0){
+            mViewManager.refreshView();
+        }
         mViewManager.notifyBackgroudColorChange(index);
+
+        handler.removeMessages(MSG_CHANGE_BACK_COLOR);
+        handler.sendEmptyMessageDelayed(MSG_CHANGE_BACK_COLOR, 1000);
     }
 
     private DataService mDataService;
@@ -111,6 +136,7 @@ public class MainActivity extends Activity {
             mDataService.removeCallBack();
         }
         unbindService(conn);
+        handler.removeMessages(MSG_CHANGE_BACK_COLOR);
     }
 
     @Override
@@ -124,6 +150,8 @@ public class MainActivity extends Activity {
         if(mDataService != null){
             mDataService.setCallBack(mDataManager.getDataServiceCallBack());
         }
+
+        handler.sendEmptyMessage(MSG_CHANGE_BACK_COLOR);
     }
 
     public int getGreenShowTime() {

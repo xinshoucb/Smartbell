@@ -74,8 +74,9 @@ public class ToyotaViewManager {
     }
 
     public void refreshView(ArrayList<DataInfo> datas) {
-        if (null == datas)
+        if (null == datas) {
             return;
+        }
 
         curShowDatas = datas;
 
