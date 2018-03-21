@@ -1,12 +1,10 @@
 package com.smartbell.bean;
 
-import io.realm.RealmObject;
-
 /**
  * Created by Curry on 18/3/17.
  */
 
-public class ItemConfig extends RealmObject {
+public class ItemConfig {
 //public class ItemConfig {
 
     public int index;

@@ -137,7 +137,7 @@ public class SettingDialog extends Dialog {
 
     private void readDataFromDB(){
         ItemConfig itemConfig = DBManager.getItemConfigHasDefault(index);
-        if (itemConfig != null && itemConfig.isValid()) {
+        if (itemConfig != null) {
             mGreenProgress = initGreenProgress = itemConfig.oneTimeSec;
             mYellowProgress = initYellowProgress = itemConfig.twoTimeSec;
         }else {

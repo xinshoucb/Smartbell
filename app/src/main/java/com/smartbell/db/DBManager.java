@@ -1,8 +1,8 @@
 package com.smartbell.db;
 
-import com.smartbell.bean.ItemConfig;
+import android.util.Log;
 
-import io.realm.Realm;
+import com.smartbell.bean.ItemConfig;
 
 /**
  * Created by Curry on 18/3/17.
@@ -12,6 +12,8 @@ import io.realm.Realm;
 public class DBManager {
 
     private static final int DEFAULT_INDEX = 20;
+    public static final String SP_KEY_PREFIX_ONE_TIME = "one_color_time_";
+    public static final String SP_KEY_PREFIX_TWO_TIME = "two_color_time_";
 
     /**
      * 获取指定item的数据
@@ -19,17 +21,12 @@ public class DBManager {
      * @return 返回item数据
      */
     public static ItemConfig getItemConfig(int index){
-        Realm realm = Realm.getDefaultInstance();
-        ItemConfig itemConfig = null;
+        ItemConfig itemConfig = new ItemConfig();
+        itemConfig.index = index;
+        itemConfig.oneTimeSec = SPUtil.getPreference(SP_KEY_PREFIX_ONE_TIME+index, 0);
+        itemConfig.twoTimeSec = SPUtil.getPreference(SP_KEY_PREFIX_TWO_TIME+index, 0);
 
-        try {
-            ItemConfig itemConfigDB = realm.where(ItemConfig.class).equalTo("index", index).findFirst();
-            if (itemConfigDB != null) {
-                itemConfig = itemConfigDB.copySelf();
-            }
-        } finally {
-            realm.close();
-        }
+        Log.d("getItemConfig","index="+index+" one="+itemConfig.oneTimeSec+" two="+itemConfig.twoTimeSec);
 
         return itemConfig;
     }
@@ -41,24 +38,9 @@ public class DBManager {
      * @param twoTimeSec 黄色背景显示时间
      */
     public static void setItemConfig(final int index, final int oneTimeSec, final int twoTimeSec) {
-        Realm realm = Realm.getDefaultInstance();
-
-        try {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    ItemConfig itemConfig = realm.where(ItemConfig.class).equalTo("index", index).findFirst();
-                    if (itemConfig == null) {
-                        itemConfig = realm.createObject(ItemConfig.class);
-                    }
-                    itemConfig.index = index;
-                    itemConfig.oneTimeSec = oneTimeSec;
-                    itemConfig.twoTimeSec = twoTimeSec;
-                }
-            });
-        } finally {
-            realm.close();
-        }
+        Log.d("setItem","index="+index+" one="+oneTimeSec+" two="+twoTimeSec);
+        SPUtil.savePreference(SP_KEY_PREFIX_ONE_TIME+index, oneTimeSec);
+        SPUtil.savePreference(SP_KEY_PREFIX_TWO_TIME+index, twoTimeSec);
     }
 
     public static ItemConfig getDefaultItemConfig(){
