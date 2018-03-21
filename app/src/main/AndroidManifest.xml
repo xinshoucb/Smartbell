@@ -39,11 +39,6 @@
 
         <service android:name=".DataService"/>
 
-        <activity android:name=".ui.ToyotaActivity"
-                  android:launchMode="singleTop"
-                  android:screenOrientation="landscape">
-
-        </activity>
     </application>
 
 </manifest>
