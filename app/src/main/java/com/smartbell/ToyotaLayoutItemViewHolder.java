@@ -21,7 +21,7 @@ public class ToyotaLayoutItemViewHolder {
     private ItemConfig mItemConfig;
 
     public ToyotaLayoutItemViewHolder(final Activity mAc, final int index) {
-        mItemConfig = DBManager.getItemConfigHasDefault(index);
+//        mItemConfig = DBManager.getItemConfigHasDefault(index);
         if (mItemConfig == null) {
             mItemConfig = new ItemConfig();
         }
@@ -111,15 +111,8 @@ public class ToyotaLayoutItemViewHolder {
     }
 
     private String getBackgroudColorFromDataConfig(){
-        ItemConfig itemConfig = setDataInfo.getItemConfig();
-        if(itemConfig == null){
-            itemConfig = mItemConfig;
-        }else{
-            itemConfig.index = mItemConfig.index;
-            if(itemConfig.oneTimeSec != mItemConfig.oneTimeSec || itemConfig.twoTimeSec != mItemConfig.twoTimeSec  ){
-                DBManager.setItemConfig(itemConfig.index, itemConfig.oneTimeSec,itemConfig.twoTimeSec);
-            }
-        }
+        ItemConfig itemConfig = DBManager.getItemConfigHasDefault(setDataInfo.getData());
+        setDataInfo.setItemConfig(itemConfig);
 
         String rtnColor = itemConfig.oneColor;
 

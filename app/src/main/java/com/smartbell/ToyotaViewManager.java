@@ -61,17 +61,17 @@ public class ToyotaViewManager {
         refreshView(curShowDatas);
     }
 
-    public void notifyBackgroudColorChange(int index) {
-        if (null != curShowDatas && index >= 0 && curShowDatas.size() > index){
-            ItemConfig itemConfig = DBManager.getItemConfig(index);
-            if (itemConfig != null) {
-                mViewHolders[index].setItemConfig(itemConfig);
-                mViewHolders[index].refreshView();
-            }
-
-            curShowDatas.get(index).setItemConfig(itemConfig);
-        }
-    }
+//    public void notifyBackgroudColorChange(int index) {
+//        if (null != curShowDatas && index >= 0 && curShowDatas.size() > index){
+//            ItemConfig itemConfig = DBManager.getItemConfig(index);
+//            if (itemConfig != null) {
+//                mViewHolders[index].setItemConfig(itemConfig);
+//                mViewHolders[index].refreshView();
+//            }
+//
+//            curShowDatas.get(index).setItemConfig(itemConfig);
+//        }
+//    }
 
     public void refreshView() {
         refreshView(curShowDatas);
