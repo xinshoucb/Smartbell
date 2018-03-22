@@ -101,6 +101,14 @@ public class DataManager {
         return rtn;
     }
 
+    public DataInfo getDataInfo(int index){
+        if(mDataList.size() > index){
+            return mDataList.get(index);
+        }
+
+        return null;
+    }
+
     public DataService.CallBack getDataServiceCallBack() {
         return dataServiceCallBack;
     }

@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -48,7 +47,7 @@ public class MainActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_CHANGE_BACK_COLOR:
-                    notifyBackgroudColorChange(-1);
+                    notifyBackgroudColorChange();
                     break;
                 default:
                     break;
@@ -90,16 +89,19 @@ public class MainActivity extends Activity {
         if (mSettingDialog == null) {
             mSettingDialog = new SettingDialog(this);
         }
-        mSettingDialog.setIndex(index);
 
-        mSettingDialog.show();
+
+        DataInfo dataInfo = mDataManager.getDataInfo(index);
+        if (dataInfo != null) {
+            mSettingDialog.setDataInfo(dataInfo);
+
+            mSettingDialog.show();
+        }
+
     }
 
-    public void notifyBackgroudColorChange(int index){
-        if (index < 0){
-            mViewManager.refreshView();
-        }
-        mViewManager.notifyBackgroudColorChange(index);
+    public void notifyBackgroudColorChange(){
+        mViewManager.refreshView();
 
         handler.removeMessages(MSG_CHANGE_BACK_COLOR);
         handler.sendEmptyMessageDelayed(MSG_CHANGE_BACK_COLOR, 1000);

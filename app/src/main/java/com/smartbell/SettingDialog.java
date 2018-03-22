@@ -29,14 +29,10 @@ public class SettingDialog extends Dialog {
     private int mYellowProgress;
     private int initYellowProgress = 5;
 
-    private int index = 0;
+    private DataInfo dataInfo;
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
+    public void setDataInfo(DataInfo dataInfo) {
+        this.dataInfo = dataInfo;
     }
 
     public SettingDialog(MainActivity mAC) {
@@ -81,14 +77,13 @@ public class SettingDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-        Log.d("chenbo", "SettingDialog  +++ show index="+index);
         readDataFromDB();
     }
 
     @Override
     public void dismiss() {
         super.dismiss();
-        mAC.notifyBackgroudColorChange(index);
+        mAC.notifyBackgroudColorChange();
     }
 
     OnSeekBarChangeListener seekListener = new OnSeekBarChangeListener() {
@@ -132,11 +127,19 @@ public class SettingDialog extends Dialog {
     }
 
     private void saveDataToDB() {
-        DBManager.setItemConfigAndDefault(index,mGreenProgress,mYellowProgress);
+        ItemConfig itemConfig = dataInfo.getItemConfig();
+        if (itemConfig == null) {
+            itemConfig = new ItemConfig();
+        }
+        itemConfig.oneTimeSec = mGreenProgress;
+        itemConfig.twoTimeSec = mYellowProgress;
+        dataInfo.setItemConfig(itemConfig);
+
+        DBManager.setItemConfigAndDefault(dataInfo.getData(),mGreenProgress,mYellowProgress);
     }
 
     private void readDataFromDB(){
-        ItemConfig itemConfig = DBManager.getItemConfigHasDefault(index);
+        ItemConfig itemConfig = DBManager.getItemConfigHasDefault(dataInfo.getData());
         if (itemConfig != null) {
             mGreenProgress = initGreenProgress = itemConfig.oneTimeSec;
             mYellowProgress = initYellowProgress = itemConfig.twoTimeSec;
