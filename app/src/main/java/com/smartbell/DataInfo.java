@@ -2,6 +2,8 @@ package com.smartbell;
 
 import android.graphics.Color;
 
+import com.smartbell.bean.ItemConfig;
+
 public class DataInfo {
 
     private String data;
@@ -10,6 +12,7 @@ public class DataInfo {
     private boolean isFlash;
     private int textColor;
     private int backgroundColor;
+    private ItemConfig itemConfig;
 
     public DataInfo(String data, long showTime, long startTime) {
         super();
@@ -67,6 +70,15 @@ public class DataInfo {
     public void setBackgroundColor(int backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
+
+    public ItemConfig getItemConfig() {
+        return itemConfig;
+    }
+
+    public void setItemConfig(ItemConfig itemConfig) {
+        this.itemConfig = itemConfig;
+    }
+
 
     private boolean isCustomColor = false;
     private void initColorByData(){

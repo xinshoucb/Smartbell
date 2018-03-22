@@ -18,12 +18,12 @@ public class ToyotaLayoutItemViewHolder {
     private TextView contentTv;
     private TextView indexTv;
     private DataInfo setDataInfo;
-    private ItemConfig itemConfig;
+    private ItemConfig mItemConfig;
 
     public ToyotaLayoutItemViewHolder(final Activity mAc, final int index) {
-        itemConfig = DBManager.getItemConfigHasDefault(index);
-        if (itemConfig == null) {
-            itemConfig = new ItemConfig();
+        mItemConfig = DBManager.getItemConfigHasDefault(index);
+        if (mItemConfig == null) {
+            mItemConfig = new ItemConfig();
         }
         LinearLayout linearLayout = (LinearLayout) mAc.findViewById(lineLayoutId[index/4]);
         layoutItem = (RelativeLayout) linearLayout.findViewById(viewsId[index%4]);
@@ -44,13 +44,12 @@ public class ToyotaLayoutItemViewHolder {
 
     public void setData(DataInfo setDataInfo) {
         this.setDataInfo = setDataInfo;
-        refreshView();
     }
 
     public void refreshView() {
         if (setDataInfo != null) {
             contentTv.setTextColor(setDataInfo.getTextColor());
-            layoutItem.setBackgroundColor(Color.parseColor(getBackgroudColor()));
+            layoutItem.setBackgroundColor(Color.parseColor(getBackgroudColorFromDataConfig()));
 
             contentTv.setText(setDataInfo.getData());
             contentTv.clearAnimation();
@@ -88,14 +87,40 @@ public class ToyotaLayoutItemViewHolder {
     }
 
     public ItemConfig getItemConfig() {
-        return itemConfig;
+        return mItemConfig;
     }
 
     public void setItemConfig(ItemConfig itemConfig) {
-        this.itemConfig = itemConfig;
+        this.mItemConfig = itemConfig;
     }
 
-    private String getBackgroudColor(){
+    private String getBackgroudColorFromItemConfig(){
+        String rtnColor = mItemConfig.oneColor;
+
+        int showTimeSec = (int) ((System.currentTimeMillis() - setDataInfo.getStartTime()) / 1000);
+
+        if(mItemConfig.oneTimeSec > 0 ){
+            if(mItemConfig.twoTimeSec > 0 && showTimeSec > (mItemConfig.oneTimeSec+mItemConfig.twoTimeSec)){
+                rtnColor = mItemConfig.thrColor;
+            }else if (showTimeSec > mItemConfig.oneTimeSec){
+                rtnColor = mItemConfig.twoColor;
+            }
+        }
+
+        return rtnColor;
+    }
+
+    private String getBackgroudColorFromDataConfig(){
+        ItemConfig itemConfig = setDataInfo.getItemConfig();
+        if(itemConfig == null){
+            itemConfig = mItemConfig;
+        }else{
+            itemConfig.index = mItemConfig.index;
+            if(itemConfig.oneTimeSec != mItemConfig.oneTimeSec || itemConfig.twoTimeSec != mItemConfig.twoTimeSec  ){
+                DBManager.setItemConfig(itemConfig.index, itemConfig.oneTimeSec,itemConfig.twoTimeSec);
+            }
+        }
+
         String rtnColor = itemConfig.oneColor;
 
         int showTimeSec = (int) ((System.currentTimeMillis() - setDataInfo.getStartTime()) / 1000);
