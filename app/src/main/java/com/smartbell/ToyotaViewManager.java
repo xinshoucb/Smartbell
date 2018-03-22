@@ -68,6 +68,8 @@ public class ToyotaViewManager {
                 mViewHolders[index].setItemConfig(itemConfig);
                 mViewHolders[index].refreshView();
             }
+
+            curShowDatas.get(index).setItemConfig(itemConfig);
         }
     }
 
@@ -93,6 +95,7 @@ public class ToyotaViewManager {
                 mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeSmall));
                 if(i < dataCount){
                     mViewHolders[i].setData(curShowDatas.get(i));
+
                     if (curShowDatas.get(i).getStartTime() == 0){
                         curShowDatas.get(i).setStartTime(System.currentTimeMillis());
                     }
@@ -100,6 +103,7 @@ public class ToyotaViewManager {
                     mViewHolders[i].setData(null);
                 }
 
+                mViewHolders[i].refreshView();
                 //clean shuju
             }
         } else {
