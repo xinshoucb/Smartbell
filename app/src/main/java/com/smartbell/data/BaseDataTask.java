@@ -4,7 +4,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.smartbell.LogView;
 import com.smartbell.TestUtils;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * BaseDataTask class
@@ -15,10 +19,14 @@ import com.smartbell.TestUtils;
 public abstract class BaseDataTask {
     private static final String TAG = "BaseDataTask";
 
+    public static final int EXCEPTION_IO = 0;
+    public static final int EXCEPTION_DATA = 1;
+
     private static final int HANDLER_REFREASH_VIEW = 0;
     private static final int HANDLER_REACCEPT = 1;
+    private static Callback mCallback;
 
-    private static Handler handler = new MyHandler();
+    protected static Handler handler = new MyHandler();
 
     static class MyHandler extends Handler{
         @Override
@@ -33,14 +41,15 @@ public abstract class BaseDataTask {
 //                        data = praseData((String) msg.obj);
 //                    }
 //                    noticeActivity();
+                    if (mCallback != null) {
+                        mCallback.update(((String) msg.obj));
+                    }
                     break;
                 case HANDLER_REACCEPT:
-//                    if(msg.arg1 == 1){
-//                        connectAndGetData();
-//                    }else if(msg.arg1 == 0){
-//                        isStop = true;
-//                    }
+//                    isStop = true;
+//                    reConnect();
                     Log.i(TAG, "reaccept = "+msg.arg1);
+                    LogView.setLog(TAG + "reaccept = "+msg.arg1);
                     break;
                 default:
                     break;
@@ -51,7 +60,7 @@ public abstract class BaseDataTask {
     public BaseDataTask(){
 
     }
-
+    
     /**
      * 开启任务
      */
@@ -65,12 +74,28 @@ public abstract class BaseDataTask {
     /**
      * 注册回调
      */
-    public abstract void registerCallback();
+    public void registerCallback(Callback callback){
+        mCallback = callback;
+    }
+
+    protected void update(String data){
+        Message msg = Message.obtain();
+        msg.what = HANDLER_REFREASH_VIEW;
+        msg.obj = data;
+        handler.sendMessage(msg);
+    }
+
+    protected void exception(int excptionId){
+        Message msg = Message.obtain();
+        msg.what = HANDLER_REACCEPT;
+        msg.arg1 = excptionId;
+        handler.sendMessage(msg);
+    }
 
     /**
      * 数据接收任务
      */
-    interface Callback{
+    public interface Callback{
         /**
          * 接收到新数据，通知界面更新
          * @param data 新数据

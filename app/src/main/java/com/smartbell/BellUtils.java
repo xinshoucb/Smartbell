@@ -1,10 +1,15 @@
 package com.smartbell;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
+import android.util.Log;
 import android.widget.TextView;
 
 public class BellUtils {
+    private static final String TAG = "BellUtils";
     private static MainActivity mAc;
 
     private static final long GREEN_TIME_GAP = 5 * 60 * 1000;
@@ -69,4 +74,36 @@ public class BellUtils {
             return -1;
         }
     }
+
+
+    private boolean isMainActivityTop(Context context) {
+        if (context == null) {
+            return false;
+        }
+
+        boolean rtn = false;
+
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+
+        if ("com.example.bell_x3.MainActivity".equals(cn.getClassName())) {
+            rtn = true;
+        }
+
+        return rtn;
+    }
+
+
+    private void startMainActivity(Context context) {
+        if (context == null) {
+            return;
+        }
+        Log.d(TAG, " start activity ");
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra("initData", data);
+        context.startActivity(intent);
+    }
+
 }

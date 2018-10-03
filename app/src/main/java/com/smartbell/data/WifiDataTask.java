@@ -1,9 +1,9 @@
 package com.smartbell.data;
 
-import android.os.Message;
 import android.util.Log;
 
-import com.smartbell.TestUtils;
+import com.smartbell.LogView;
+import com.smartbell.util.ThreadPoolUtil;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
@@ -22,56 +22,60 @@ import java.util.ArrayList;
  */
 public class WifiDataTask extends BaseDataTask {
     public static final String TAG = "WifiDataTask";
+    private static final long TIME_OUT = 20 * 1000;
 
     private ServerSocket server;
-    private static final int PORT = 30001;
+    private static final int PORT = 30006;
 
+    private Object mLock = new Object();
+    private boolean isStop = false;
 
     @Override
     public void startTask() {
-        if (null == server) {
-            Log.d(TAG, "server == null");
-            try {
-                // server = new ServerSocket(PORT);
-                server = new ServerSocket();
-                server.setReuseAddress(true);
-                server.bind(new InetSocketAddress(PORT));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                Log.d(tag, TAG + "new ServerSocket failed : " + e.toString());
-                stopSelf();
-                e.printStackTrace();
+        try {
+            if (null != server) {
+                server.close();
             }
+
+            server = new ServerSocket();
+            server.setReuseAddress(true);
+            server.bind(new InetSocketAddress(PORT));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            Log.d(TAG, "new ServerSocket failed : " + e.toString());
+            LogView.setLog(TAG + "new ServerSocket failed : " + e.toString());
+//            stopSelf();
+            exception(EXCEPTION_IO);
+            e.printStackTrace();
         }
+
+        connectAndGetData();
     }
 
     @Override
     public void stopTask() {
-
-    }
-
-    @Override
-    public void registerCallback() {
-
+        try {
+            if (server != null) {
+                server.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void connectAndGetData() {
-        if (TestUtils.isTest) {
-            testData();
-            return;
-        }
-
-        new Thread(new Runnable() {
+        ThreadPoolUtil.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
                 synchronized (mLock) {
                     isStop = false;
-//                    Looper.prepare();
 
                     try {
-                        Log.d(tag, TAG + "accept before ");
+                        Log.d(TAG, "accept before ");
+                        LogView.setLog(TAG + "accept before");
                         Socket socket = server.accept();
-                        Log.d(tag, TAG + "accept after");
+                        Log.d(TAG, "accept after isStop="+isStop);
+                        LogView.setLog(TAG + "accept after isStop="+isStop);
 
                         BufferedInputStream reader = null;
                         DataOutputStream writer = null;
@@ -88,7 +92,7 @@ public class WifiDataTask extends BaseDataTask {
                             ArrayList<String> contents = new ArrayList<String>();
                             bufLenght = is.available();
                             if (bufLenght > 0) {
-                                handler.removeMessages(HANDLER_REACCEPT);
+                                exception(EXCEPTION_IO);
 
                                 buf = new byte[bufLenght];
                                 reader.read(buf);
@@ -96,13 +100,13 @@ public class WifiDataTask extends BaseDataTask {
                                 for (int i = 0; i < bufLenght; i++) {
                                     content += (char)buf[i];
 
-                                    Log.d(tag, TAG + "buf="+buf[i]+"  "+sb.length());
+                                    Log.d(TAG, "buf="+buf[i]+"  "+sb.length());
                                     if(buf[i] == -1 || buf[i] == 1){
-                                        Log.d(tag, TAG + "buf[i] == -1 || buf[i] == 1  "+sb.length());
+                                        Log.d(TAG, "buf[i] == -1 || buf[i] == 1  "+sb.length());
                                         if (sb.length() > 0) {
                                             contents.add(sb.toString());
                                             sb = new StringBuilder();
-                                            Log.d(tag, TAG + "create new content");
+                                            Log.d(TAG, "create new content");
                                         }
                                     }else{
                                         sb.append((char)buf[i]);
@@ -113,15 +117,15 @@ public class WifiDataTask extends BaseDataTask {
                                     contents.add(sb.toString());
                                 }
 
-                                Log.d(tag, TAG + "content = " + content + " bufLenght = " + bufLenght+"  "+contents.size());
+                                Log.d(TAG, "content = " + content + " bufLenght = " + bufLenght+"  "+contents.size());
 
                                 for (String contentStr : contents) {
-                                    Log.d(tag, TAG + "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
+                                    Log.d(TAG, "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
                                     if (!contentStr.equals("")) {
                                         if ((contentStr.length() == 3) || (contentStr.length() == 44)) {
-                                            Log.d(tag, TAG + "msg bufLenght = " + bufLenght);
+                                            Log.d(TAG, "msg bufLenght = " + bufLenght);
                                         } else {
-                                            Log.d(tag, TAG + "msg mix bufLenght = " + bufLenght);
+                                            Log.d(TAG, "msg mix bufLenght = " + bufLenght);
                                             continue;
                                         }
 
@@ -133,47 +137,54 @@ public class WifiDataTask extends BaseDataTask {
                                             writer.write(0xaa);
                                             writer.flush();
                                         } else {
-                                            Message msg = Message.obtain();
-                                            msg.what = HANDLER_REFREASH_VIEW;
-                                            msg.obj = contentStr;
-                                            handler.sendMessage(msg);
+                                            update(contentStr);
                                         }
                                     } else {
 
                                     }
                                 }
                             }else{
-                                if (!handler.hasMessages(HANDLER_REACCEPT)) {
-                                    Message msg = Message.obtain();
-                                    msg.what = HANDLER_REACCEPT;
-                                    msg.arg1 = 0;
-                                    handler.sendMessageDelayed(msg,TIME_OUT);
-                                }
+//                                if (!handler.hasMessages(HANDLER_REACCEPT)) {
+//                                    Message msg = Message.obtain();
+//                                    msg.what = HANDLER_REACCEPT;
+//                                    msg.arg1 = 1;
+//                                    handler.sendMessageDelayed(msg,TIME_OUT);
+//                                }
                             }
 
                             Thread.sleep(500);
                         }
 
-                        if (null != writer)
+                        if (null != writer) {
                             writer.close();
+                        }
                         reader.close();
-                        Log.d(tag, TAG + " while end ");
+                        Log.d(TAG, " while end ");
                     } catch (Exception e) {
-                        Log.d(tag, TAG + "IOException " + e.toString());
+
+//                        Message msg = Message.obtain();
+//                        msg.what = HANDLER_REACCEPT;
+//                        msg.arg1 = 1;
+//                        handler.sendMessageDelayed(msg,1000);
+//                        Log.d(TAG, "IOException " + e.toString());
+//                        LogView.setLog(TAG + "IOException " + e.toString());
                         e.printStackTrace();
                     } finally {
                         isStop = true;
-
-                        Message msg = Message.obtain();
-                        msg.what = HANDLER_REACCEPT;
-                        msg.arg1 = 1;
-                        handler.sendMessage(msg);
                     }
 
                 }
             }
+        });
+    }
 
-        }).start();
+    private String data;
+
+    private String praseData(String data) {
+        int lenght = data.length();
+        String rtn = data.substring(lenght - 20, lenght - 15);
+        Log.d("chenbo", TAG + "praseData rtn = " + rtn);
+        return rtn;
     }
 
 }

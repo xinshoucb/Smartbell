@@ -18,7 +18,7 @@ public class UsbDataTask extends BaseDataTask {
     }
 
     @Override
-    public void registerCallback() {
+    public void registerCallback(Callback callback) {
 
     }
 }
