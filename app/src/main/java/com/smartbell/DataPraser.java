@@ -45,4 +45,11 @@ public class DataPraser {
 
         return contents;
     }
+
+    public static String rawStr2Ctrl(String raw) {
+        int lenght = raw.length();
+        String rtn = raw.substring(lenght - 20, lenght - 15);
+        Log.d(TAG, "rawStr2Ctrl rtn = " + rtn);
+        return rtn;
+    }
 }

@@ -37,14 +37,8 @@ public abstract class BaseDataTask {
 
             switch (msg.what) {
                 case HANDLER_REFREASH_VIEW:
-//                    if (TestUtils.isTest) {
-//                        data = (String) msg.obj;
-//                    } else {
-//                        data = praseData((String) msg.obj);
-//                    }
-//                    noticeActivity();
                     if (mCallback != null) {
-                        mCallback.update(((String) msg.obj));
+                        mCallback.update((String) msg.obj);
                     }
                     break;
                 case HANDLER_REACCEPT:

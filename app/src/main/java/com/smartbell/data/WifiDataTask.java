@@ -113,7 +113,7 @@ public class WifiDataTask extends BaseDataTask {
                                             writer.write(0xaa);
                                             writer.flush();
                                         } else {
-                                            update(contentStr);
+                                            update(DataPraser.rawStr2Ctrl(contentStr));
                                         }
                                     } else {
 
@@ -152,15 +152,6 @@ public class WifiDataTask extends BaseDataTask {
         };
 
         ThreadPoolUtil.getThreadPool().execute(taskRunner);
-    }
-
-    private String data;
-
-    private String praseData(String data) {
-        int lenght = data.length();
-        String rtn = data.substring(lenght - 20, lenght - 15);
-        Log.d("chenbo", TAG + "praseData rtn = " + rtn);
-        return rtn;
     }
 
 }

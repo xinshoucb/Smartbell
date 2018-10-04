@@ -179,7 +179,7 @@ public class UsbDataTask extends BaseDataTask {
                                 int result = deviceConnection.bulkTransfer(usbEpOut, sendData, sendData.length, 3000);
                                 Log.e(TAG, "发送状态码：" + result);
                             } else if(contentStr.length() == 44){
-                                update(contentStr);
+                                update(DataPraser.rawStr2Ctrl(contentStr));
                             }else{
                                 Log.e(TAG, "error contentStr=" + contentStr);
                             }
