@@ -23,7 +23,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    public static final String ACTION_USB_STATE = "android.hardware.usb.action.USB_STATE";
     private final static String SERVICE_NAME = "com.smartbell.DataService";
     public static final String TAG = "MainActivity";
     private int greenShowTime = 5;
@@ -91,42 +90,6 @@ public class MainActivity extends Activity {
 
     }
 
-
-
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-            //TODO 检查一个该device是否是我们的目标设备
-//            if(!isTargetDevice(device)){
-//                return
-//            }
-            String action=intent.getAction();
-
-            if (action.equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                Toast.makeText(MainActivity.this, "usb device attached", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "BroadcastReceiver usb device attached." );
-            }else if(action.equals(UsbManager.ACTION_USB_DEVICE_DETACHED)){
-                Toast.makeText(MainActivity.this, "usb device detached", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "BroadcastReceiver usb device detached." );
-            }else if (action.equals(ACTION_USB_STATE)) {
-                boolean connected = intent.getExtras().getBoolean("connected");
-                Toast.makeText(context, "aciton =" + connected, Toast.LENGTH_SHORT).show();
-                if (connected) {
-
-                } else {
-
-                }
-            }else{
-                Toast.makeText(MainActivity.this, action, Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-
-
-
     public void showSettingDialog(int index) {
         if (mSettingDialog == null) {
             mSettingDialog = new SettingDialog(this);
@@ -181,8 +144,6 @@ public class MainActivity extends Activity {
         }
         unbindService(conn);
         handler.removeMessages(MSG_CHANGE_BACK_COLOR);
-
-        unregisterReceiver(receiver);
     }
 
     @Override
@@ -198,15 +159,6 @@ public class MainActivity extends Activity {
         }
 
         handler.sendEmptyMessage(MSG_CHANGE_BACK_COLOR);
-
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        filter.addAction(UsbManager. ACTION_USB_DEVICE_DETACHED);
-        filter.addAction(ACTION_USB_STATE);
-        registerReceiver(receiver, filter);
     }
 
     public int getGreenShowTime() {
