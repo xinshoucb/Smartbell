@@ -18,7 +18,6 @@ public class LogView {
     public static void setLog(String log){
         if (logView != null) {
             logView.setText(logView.getText()+"\n"+log);
-
         }
     }
 }

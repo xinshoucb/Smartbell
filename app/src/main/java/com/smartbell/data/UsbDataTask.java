@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartbell.DataPraser;
+import com.smartbell.LogView;
 import com.smartbell.MainActivity;
 import com.smartbell.util.TaskRunner;
 import com.smartbell.util.ThreadPoolUtil;
@@ -68,6 +69,7 @@ public class UsbDataTask extends BaseDataTask {
 
                 Toast.makeText(mContext, "usb device attached", Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "BroadcastReceiver usb device attached." );
+                LogView.setLog("usb device attached.");
             }else if(action.equals(UsbManager.ACTION_USB_DEVICE_DETACHED)){
                 if (taskRunner != null) {
                     taskRunner.cancel();
@@ -75,6 +77,7 @@ public class UsbDataTask extends BaseDataTask {
 
                 Toast.makeText(mContext, "usb device detached", Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "BroadcastReceiver usb device detached." );
+                LogView.setLog("usb device detached.");
             }else if (action.equals(ACTION_USB_STATE)) {
                 boolean connected = intent.getExtras().getBoolean("connected");
                 Toast.makeText(context, "aciton =" + connected, Toast.LENGTH_SHORT).show();
@@ -95,6 +98,7 @@ public class UsbDataTask extends BaseDataTask {
 
     @Override
     public void startTask() {
+        Log.v(TAG, "startTask");
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
@@ -109,6 +113,7 @@ public class UsbDataTask extends BaseDataTask {
 
     @Override
     public void stopTask() {
+        Log.v(TAG, "stopTask");
         mContext.unregisterReceiver(usbDeviceReceiver);
 
         if (taskRunner != null) {
@@ -123,12 +128,17 @@ public class UsbDataTask extends BaseDataTask {
 
         if (usbManager == null) {
             Log.e(TAG, "获取usbManager失败");
+            LogView.setLog("get usbManager failed.");
             return;
+        }else{
+            LogView.setLog("get usbManager success.");
         }
 
         HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+        LogView.setLog("usb device size="+deviceList.size());
         for (UsbDevice device : deviceList.values()) {
             Log.i(TAG, "VendorId="+device.getVendorId()+"，ProductId="+device.getProductId());
+            LogView.setLog("select usb device VendorId="+device.getVendorId()+"，ProductId="+device.getProductId());
             if (isTargetDevice(device)) {
                 if (usbDevice == null) {
                     usbDevice = device;
@@ -152,6 +162,7 @@ public class UsbDataTask extends BaseDataTask {
 
     private void checkPermission(){
         if (usbManager == null || usbDevice == null) {
+            LogView.setLog("checkPermission but has no usbDevice.");
             return;
         }
 
@@ -172,6 +183,7 @@ public class UsbDataTask extends BaseDataTask {
     }
 
     private void connectUsbDevice() {
+        LogView.setLog("connectUsbDevice start.");
         if (usbDevice == null) {
             Log.e(TAG, "没有找到设备");
             return;
@@ -194,12 +206,14 @@ public class UsbDataTask extends BaseDataTask {
                     UsbDeviceConnection connection = usbManager.openDevice(usbDevice);
                     if (connection == null) {
                         Log.e(TAG, "设备连接为空");
+                        LogView.setLog("UsbDeviceConnection failed.");
                         return;
                     }
 
                     // 2、获取接口
                     if (usbDevice.getInterfaceCount() <= 0) {
                         Log.e(TAG, "没有找到usbInterface");
+                        LogView.setLog("getInterfaceCount failed.");
                         return;
                     }else{
                         //一个设备上面一般只有一个接口，有两个端点，分别接受和发送数据
@@ -212,6 +226,7 @@ public class UsbDataTask extends BaseDataTask {
                     } else {
                         connection.close();
                         Log.e(TAG, "claim usbInterface failed");
+                        LogView.setLog("claim usbInterface failed.");
                         return;
                     }
 
@@ -231,10 +246,12 @@ public class UsbDataTask extends BaseDataTask {
 
                     // 5、发送接收数据
                     while (!isCancel){
+                        LogView.setLog("usb device connect success.");
                         byte[] receiveBytes = new byte[1024];
                         int length = deviceConnection.bulkTransfer(usbEpIn, receiveBytes, receiveBytes.length, 3000);
                         Log.e(TAG, "接受状态码：" + length);
                         if(length <= 0){
+                            LogView.setLog("read data from usb device is empty .");
                             continue;
                         }
 

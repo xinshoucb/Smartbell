@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main_toyota);
         sharedPreferences = getSharedPreferences("bell", Context.MODE_PRIVATE);
 
-//        LogView.setLogView((TextView) findViewById(R.id.log_tv));
+        LogView.setLogView((TextView) findViewById(R.id.log_tv));
         initSetValue();
 
         BellUtils.init(this);
@@ -87,7 +88,7 @@ public class MainActivity extends Activity {
         });
         Intent intent = new Intent(this, DataService.class);
         startService(intent);
-
+        LogView.setLog("MainActivity onCreate");
     }
 
     public void showSettingDialog(int index) {
