@@ -1,5 +1,6 @@
 package com.smartbell.data;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -26,6 +27,7 @@ public abstract class BaseDataTask {
     private static final int HANDLER_REACCEPT = 1;
     private static Callback mCallback;
 
+    protected Context mContext;
     protected static Handler handler = new MyHandler();
 
     static class MyHandler extends Handler{
@@ -57,8 +59,8 @@ public abstract class BaseDataTask {
         }
     }
 
-    public BaseDataTask(){
-
+    public BaseDataTask(Context context){
+        mContext = context;
     }
     
     /**

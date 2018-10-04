@@ -1,5 +1,7 @@
 package com.smartbell.data;
 
+import android.content.Context;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,6 +22,10 @@ public class FakeDateTask extends BaseDataTask {
 
 
     private Timer mTimer;
+
+    public FakeDateTask(Context context) {
+        super(context);
+    }
 
     @Override
     public void startTask() {

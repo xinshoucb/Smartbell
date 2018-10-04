@@ -1,8 +1,11 @@
 package com.smartbell.data;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.smartbell.DataPraser;
 import com.smartbell.LogView;
+import com.smartbell.util.TaskRunner;
 import com.smartbell.util.ThreadPoolUtil;
 
 import java.io.BufferedInputStream;
@@ -24,11 +27,15 @@ public class WifiDataTask extends BaseDataTask {
     public static final String TAG = "WifiDataTask";
     private static final long TIME_OUT = 20 * 1000;
 
-    private ServerSocket server;
+    private final Object mLock = new Object();
     private static final int PORT = 30006;
 
-    private Object mLock = new Object();
-    private boolean isStop = false;
+    private ServerSocket server;
+    private TaskRunner taskRunner;
+
+    public WifiDataTask(Context context) {
+        super(context);
+    }
 
     @Override
     public void startTask() {
@@ -64,18 +71,14 @@ public class WifiDataTask extends BaseDataTask {
     }
 
     private void connectAndGetData() {
-        ThreadPoolUtil.getThreadPool().execute(new Runnable() {
+        taskRunner = new TaskRunner() {
             @Override
             public void run() {
                 synchronized (mLock) {
-                    isStop = false;
-
                     try {
                         Log.d(TAG, "accept before ");
                         LogView.setLog(TAG + "accept before");
                         Socket socket = server.accept();
-                        Log.d(TAG, "accept after isStop="+isStop);
-                        LogView.setLog(TAG + "accept after isStop="+isStop);
 
                         BufferedInputStream reader = null;
                         DataOutputStream writer = null;
@@ -85,39 +88,12 @@ public class WifiDataTask extends BaseDataTask {
                         byte[] buf = null;
 
                         reader = new BufferedInputStream(is);
-                        String content = null;
-
-                        while (!isStop) {
-                            content = "";
-                            ArrayList<String> contents = new ArrayList<String>();
+                        while (!isCancel) {
                             bufLenght = is.available();
                             if (bufLenght > 0) {
-                                exception(EXCEPTION_IO);
-
                                 buf = new byte[bufLenght];
                                 reader.read(buf);
-                                StringBuilder sb = new StringBuilder();
-                                for (int i = 0; i < bufLenght; i++) {
-                                    content += (char)buf[i];
-
-                                    Log.d(TAG, "buf="+buf[i]+"  "+sb.length());
-                                    if(buf[i] == -1 || buf[i] == 1){
-                                        Log.d(TAG, "buf[i] == -1 || buf[i] == 1  "+sb.length());
-                                        if (sb.length() > 0) {
-                                            contents.add(sb.toString());
-                                            sb = new StringBuilder();
-                                            Log.d(TAG, "create new content");
-                                        }
-                                    }else{
-                                        sb.append((char)buf[i]);
-                                    }
-                                }
-
-                                if (sb.length() > 0) {
-                                    contents.add(sb.toString());
-                                }
-
-                                Log.d(TAG, "content = " + content + " bufLenght = " + bufLenght+"  "+contents.size());
+                                ArrayList<String> contents = DataPraser.buffer2String(buf);
 
                                 for (String contentStr : contents) {
                                     Log.d(TAG, "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
@@ -169,13 +145,13 @@ public class WifiDataTask extends BaseDataTask {
 //                        Log.d(TAG, "IOException " + e.toString());
 //                        LogView.setLog(TAG + "IOException " + e.toString());
                         e.printStackTrace();
-                    } finally {
-                        isStop = true;
                     }
 
                 }
             }
-        });
+        };
+
+        ThreadPoolUtil.getThreadPool().execute(taskRunner);
     }
 
     private String data;
