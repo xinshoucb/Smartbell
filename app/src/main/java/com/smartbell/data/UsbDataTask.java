@@ -11,13 +11,13 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.smartbell.DataPraser;
 import com.smartbell.LogView;
-import com.smartbell.MainActivity;
 import com.smartbell.util.TaskRunner;
 import com.smartbell.util.ThreadPoolUtil;
 
@@ -44,13 +44,13 @@ public class UsbDataTask extends BaseDataTask {
     private BroadcastReceiver permissionBcReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_USB_PERMISSION)) {
-                if (intent.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED)) {
+            if (ACTION_USB_PERMISSION.equals(intent.getAction())) {
+                Bundle bundle = intent.getExtras();
+                if (bundle != null && bundle.getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED)) {
                     connectUsbDevice();
                 }else{
                     Log.e(TAG, "no permission");
                 }
-                mContext.unregisterReceiver(permissionBcReceiver);
             }
         }
     };
@@ -107,14 +107,16 @@ public class UsbDataTask extends BaseDataTask {
         filter.addAction(ACTION_USB_STATE);
         mContext.registerReceiver(usbDeviceReceiver, filter);
 
+        mContext.registerReceiver(permissionBcReceiver, new IntentFilter(ACTION_USB_PERMISSION));
+
         findUsbDevice();
-        checkPermission();
     }
 
     @Override
     public void stopTask() {
         Log.v(TAG, "stopTask");
         mContext.unregisterReceiver(usbDeviceReceiver);
+        mContext.unregisterReceiver(permissionBcReceiver);
 
         if (taskRunner != null) {
             taskRunner.cancel();
@@ -142,11 +144,14 @@ public class UsbDataTask extends BaseDataTask {
             if (isTargetDevice(device)) {
                 if (usbDevice == null) {
                     usbDevice = device;
-                }else{
+                }else if(usbDevice != device){
                     synchronized (usbDevice) {
                         usbDevice = device;
                     }
                 }
+
+                checkPermission();
+                break;
             }
         }
     }
@@ -175,9 +180,6 @@ public class UsbDataTask extends BaseDataTask {
 
     private void requestPermission(){
         Log.d(TAG, "正在获取权限...");
-
-        mContext.registerReceiver(permissionBcReceiver, new IntentFilter(ACTION_USB_PERMISSION));
-
         PendingIntent intent = PendingIntent.getBroadcast(mContext,0,new Intent(ACTION_USB_PERMISSION),0);
         usbManager.requestPermission(usbDevice, intent);
     }
@@ -201,85 +203,94 @@ public class UsbDataTask extends BaseDataTask {
                 UsbEndpoint usbEpIn = null;
                 UsbEndpoint usbEpOut = null;
 
-                synchronized (usbDevice) {
-                    // 1、创建连接
-                    UsbDeviceConnection connection = usbManager.openDevice(usbDevice);
-                    if (connection == null) {
-                        Log.e(TAG, "设备连接为空");
-                        LogView.setLog("UsbDeviceConnection failed.");
-                        return;
-                    }
-
-                    // 2、获取接口
-                    if (usbDevice.getInterfaceCount() <= 0) {
-                        Log.e(TAG, "没有找到usbInterface");
-                        LogView.setLog("getInterfaceCount failed.");
-                        return;
-                    }else{
-                        //一个设备上面一般只有一个接口，有两个端点，分别接受和发送数据
-                        usbInterface = usbDevice.getInterface(0);
-                    }
-
-                    // 3、声明接口
-                    if (connection.claimInterface(usbInterface, true)) {
-                        deviceConnection = connection;
-                    } else {
-                        connection.close();
-                        Log.e(TAG, "claim usbInterface failed");
-                        LogView.setLog("claim usbInterface failed.");
-                        return;
-                    }
-
-                    // 4、获取输入输出端口
-                    for (int i = 0; i < usbInterface.getEndpointCount(); i++) {
-                        UsbEndpoint ep = usbInterface.getEndpoint(i);
-                        if (ep.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
-                            if (ep.getDirection() == UsbConstants.USB_DIR_OUT) {
-                                usbEpOut = ep;
-                                Log.e(TAG, "获取发送数据的端点");
-                            } else {
-                                usbEpIn = ep;
-                                Log.e(TAG, "获取接受数据的端点");
-                            }
-                        }
-                    }
-
-                    // 5、发送接收数据
-                    while (!isCancel){
-                        LogView.setLog("usb device connect success.");
-                        byte[] receiveBytes = new byte[1024];
-                        int length = deviceConnection.bulkTransfer(usbEpIn, receiveBytes, receiveBytes.length, 3000);
-                        Log.e(TAG, "接受状态码：" + length);
-                        if(length <= 0){
-                            LogView.setLog("read data from usb device is empty .");
-                            continue;
+                try{
+                    synchronized (usbDevice) {
+                        // 1、创建连接
+                        UsbDeviceConnection connection = usbManager.openDevice(usbDevice);
+                        if (connection == null) {
+                            Log.e(TAG, "设备连接为空");
+                            LogView.setLog("UsbDeviceConnection failed.");
+                            return;
                         }
 
-                        ArrayList<String> contents = DataPraser.buffer2String(receiveBytes);
+                        // 2、获取接口
+                        if (usbDevice.getInterfaceCount() <= 0) {
+                            Log.e(TAG, "没有找到usbInterface");
+                            LogView.setLog("getInterfaceCount failed.");
+                            return;
+                        }else{
+                            //一个设备上面一般只有一个接口，有两个端点，分别接受和发送数据
+                            usbInterface = usbDevice.getInterface(0);
+                            LogView.setLog("getInterfaceCount success.");
+                        }
 
-                        for (String contentStr : contents) {
-                            Log.d(TAG, "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
-                            if (!TextUtils.isEmpty(contentStr)) {
-                                if (contentStr.length() == 3 && "ask".equals(contentStr)) {
-                                    byte[] sendData = new byte[4];
-                                    sendData[0] = (byte) 0x55;
-                                    sendData[1] = (byte) 0x01;
-                                    sendData[2] = (byte) 0x00;
-                                    sendData[3] = (byte) 0xaa;
-                                    int result = deviceConnection.bulkTransfer(usbEpOut, sendData, sendData.length, 3000);
-                                    Log.e(TAG, "发送状态码：" + result);
-                                } else if(contentStr.length() == 44){
-                                    update(DataPraser.rawStr2Ctrl(contentStr));
-                                }else{
-                                    Log.e(TAG, "error contentStr=" + contentStr);
+                        // 3、声明接口
+                        if (connection.claimInterface(usbInterface, true)) {
+                            deviceConnection = connection;
+                            LogView.setLog("claim usbInterface success.");
+                        } else {
+                            connection.close();
+                            Log.e(TAG, "claim usbInterface failed");
+                            LogView.setLog("claim usbInterface failed.");
+                            return;
+                        }
+
+                        // 4、获取输入输出端口
+                        for (int i = 0; i < usbInterface.getEndpointCount(); i++) {
+                            UsbEndpoint ep = usbInterface.getEndpoint(i);
+                            if (ep.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
+                                if (ep.getDirection() == UsbConstants.USB_DIR_OUT) {
+                                    usbEpOut = ep;
+                                    Log.e(TAG, "获取发送数据的端点");
+                                } else {
+                                    usbEpIn = ep;
+                                    Log.e(TAG, "获取接受数据的端点");
                                 }
                             }
                         }
-                    }
 
-                    // 6、释放接口
-                    deviceConnection.releaseInterface(usbInterface);
-                    deviceConnection.close();
+                        LogView.setLog("usb device connect success.");
+                        // 5、发送接收数据
+                        while (!isCancel){
+                            byte[] receiveBytes = new byte[1024];
+                            int length = deviceConnection.bulkTransfer(usbEpIn, receiveBytes, receiveBytes.length, 3000);
+                            Log.e(TAG, "接受状态码：" + length);
+                            if(length <= 0){
+                                LogView.setLog("read data from usb device is empty .");
+                                continue;
+                            }
+
+                            ArrayList<String> contents = DataPraser.buffer2String(receiveBytes, length);
+
+                            for (String contentStr : contents) {
+                                LogView.setLog("contentStr="+contentStr);
+                                Log.d(TAG, "update data contentStr = " + contentStr + " bufLenght = " + contentStr.length());
+                                if (!TextUtils.isEmpty(contentStr)) {
+                                    if (contentStr.length() == 3 && "ask".equals(contentStr)) {
+                                        byte[] sendData = new byte[4];
+                                        sendData[0] = (byte) 0x55;
+                                        sendData[1] = (byte) 0x01;
+                                        sendData[2] = (byte) 0x00;
+                                        sendData[3] = (byte) 0xaa;
+                                        int result = deviceConnection.bulkTransfer(usbEpOut, sendData, sendData.length, 3000);
+                                        Log.e(TAG, "发送状态码：" + result);
+                                    } else if(contentStr.length() == 44){
+                                        update(DataPraser.rawStr2Ctrl(contentStr));
+                                    }else{
+                                        Log.e(TAG, "error contentStr=" + contentStr);
+                                    }
+                                }
+                            }
+                        }
+
+                        LogView.setLog("close usb device connect.");
+                        // 6、释放接口
+                        deviceConnection.releaseInterface(usbInterface);
+                        deviceConnection.close();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    LogView.setLog(e.toString());
                 }
             }
         };

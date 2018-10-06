@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
         sharedPreferences = getSharedPreferences("bell", Context.MODE_PRIVATE);
 
         LogView.setLogView((TextView) findViewById(R.id.log_tv));
+        LogView.setActivity(this);
         initSetValue();
 
         BellUtils.init(this);
@@ -89,6 +90,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, DataService.class);
         startService(intent);
         LogView.setLog("MainActivity onCreate");
+
     }
 
     public void showSettingDialog(int index) {

@@ -13,19 +13,22 @@ import java.util.ArrayList;
 public class DataPraser {
     public static final String TAG = "DataPraser";
 
-    public static ArrayList<String> buffer2String(byte[] buf){
+    public static ArrayList<String> buffer2String(byte[] buf, int length){
         if (buf == null) {
             return null;
         }
+
+        LogView.setLog("raw conten =" + new String(buf));
 
         ArrayList<String> contents = new ArrayList<String>();
         String content = "";
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < buf.length; i++) {
+        for (int i = 0; i < length; i++) {
             content += (char)buf[i];
 
             Log.d(TAG, "buf="+buf[i]+"  "+sb.length());
+            LogView.setLog("buf["+i+"]="+buf[i]+", length="+length);
             if(buf[i] == -1 || buf[i] == 1){
                 Log.d(TAG, "buf[i] == -1 || buf[i] == 1  "+sb.length());
                 if (sb.length() > 0) {
@@ -42,6 +45,7 @@ public class DataPraser {
         }
 
         Log.d(TAG, "conten =" + content + " bufLenght=" + buf.length+"，contents.size="+contents.size());
+        LogView.setLog("conten =" + content);
 
         return contents;
     }

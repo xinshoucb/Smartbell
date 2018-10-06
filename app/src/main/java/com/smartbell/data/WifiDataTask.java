@@ -93,7 +93,7 @@ public class WifiDataTask extends BaseDataTask {
                             if (bufLenght > 0) {
                                 buf = new byte[bufLenght];
                                 reader.read(buf);
-                                ArrayList<String> contents = DataPraser.buffer2String(buf);
+                                ArrayList<String> contents = DataPraser.buffer2String(buf, bufLenght);
 
                                 for (String contentStr : contents) {
                                     Log.d(TAG, "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
