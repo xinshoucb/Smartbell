@@ -45,7 +45,6 @@ public class DataPraser {
         }
 
         Log.d(TAG, "conten =" + content + " bufLenght=" + buf.length+"，contents.size="+contents.size());
-        LogView.setLog("conten =" + content);
 
         return contents;
     }
