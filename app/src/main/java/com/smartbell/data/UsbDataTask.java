@@ -223,7 +223,9 @@ public class UsbDataTask extends BaseDataTask {
 
                             while (!isCancel){
                                 byte[] receiveBytes = new byte[1024];
-                                int numBytesRead = mUsbSerialPort.read(receiveBytes, 1000);
+                                int numBytesRead = mUsbSerialPort.read(receiveBytes, 0);
+                                //手动延迟，1秒钟获取一次数据
+                                Thread.sleep(1000);
                                 Log.d(TAG, "Read " + numBytesRead + " bytes.");
 
                                 Log.e(TAG, "接受数据长度：" + numBytesRead);

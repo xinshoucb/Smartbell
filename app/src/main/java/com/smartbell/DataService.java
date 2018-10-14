@@ -21,19 +21,7 @@ public class DataService extends Service {
         super.onCreate();
         Log.d(TAG, " onCreate ");
         mDataTask = DataTaskFactory.getDataTask(DataTaskFactory.TASK_TYPE_USB, this);
-        mDataTask.registerCallback(new BaseDataTask.Callback() {
-            @Override
-            public void update(String data) {
-                if (mCallBack != null) {
-                    mCallBack.updateData(data);
-                }
-            }
 
-            @Override
-            public void exception(int exceptionId) {
-
-            }
-        });
         mDataTask.startTask();
     }
 
@@ -48,6 +36,23 @@ public class DataService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, " onStartCommand ");
+
+        if (mDataTask != null) {
+            mDataTask.registerCallback(new BaseDataTask.Callback() {
+                @Override
+                public void update(String data) {
+                    if (mCallBack != null) {
+                        mCallBack.updateData(data);
+                    }
+                }
+
+                @Override
+                public void exception(int exceptionId) {
+
+                }
+            });
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
