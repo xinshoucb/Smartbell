@@ -12,25 +12,25 @@ import java.util.ArrayList;
  */
 public class DataPraser {
     public static final String TAG = "DataPraser";
+    public static StringBuilder lastSb;
 
     public static ArrayList<String> buffer2String(byte[] buf, int length){
         if (buf == null) {
             return null;
         }
 
-        LogView.setLog("raw conten =" + new String(buf));
+
 
         ArrayList<String> contents = new ArrayList<String>();
         String content = "";
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = lastSb == null ? new StringBuilder() : lastSb;
+        LogView.setLog("lastStr="+sb.toString()+",raw conten =" + new String(buf));
+
         for (int i = 0; i < length; i++) {
             content += (char)buf[i];
 
-            Log.d(TAG, "buf="+buf[i]+"  "+sb.length());
-            LogView.setLog("buf["+i+"]="+buf[i]+", length="+length);
             if(buf[i] == -1 || buf[i] == 1){
-                Log.d(TAG, "buf[i] == -1 || buf[i] == 1  "+sb.length());
                 if (sb.length() > 0) {
                     contents.add(sb.toString());
                     sb = new StringBuilder();
@@ -41,7 +41,13 @@ public class DataPraser {
         }
 
         if (sb.length() > 0) {
-            contents.add(sb.toString());
+            String tmpStr = sb.toString();
+            if(!"ask".equals(tmpStr) && sb.length() != 44){
+                lastSb = sb;
+            }else{
+                contents.add(tmpStr);
+                lastSb = null;
+            }
         }
 
         Log.d(TAG, "conten =" + content + " bufLenght=" + buf.length+"，contents.size="+contents.size());

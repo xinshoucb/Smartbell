@@ -225,7 +225,7 @@ public class UsbDataTask extends BaseDataTask {
                                 byte[] receiveBytes = new byte[1024];
                                 int numBytesRead = mUsbSerialPort.read(receiveBytes, 0);
                                 //手动延迟，1秒钟获取一次数据
-                                Thread.sleep(1000);
+                                Thread.sleep(500);
                                 Log.d(TAG, "Read " + numBytesRead + " bytes.");
 
                                 Log.e(TAG, "接受数据长度：" + numBytesRead);
@@ -236,11 +236,11 @@ public class UsbDataTask extends BaseDataTask {
 
                                 ArrayList<String> contents = DataPraser.buffer2String(receiveBytes, numBytesRead);
 
+                                boolean hasSendAsk = false;
                                 for (String contentStr : contents) {
-                                    LogView.setLog("contentStr="+contentStr);
                                     Log.d(TAG, "update data contentStr = " + contentStr + " bufLenght = " + contentStr.length());
                                     if (!TextUtils.isEmpty(contentStr)) {
-                                        if (contentStr.length() == 3 && "ask".equals(contentStr)) {
+                                        if (contentStr.length() == 3 && "ask".equals(contentStr) && !hasSendAsk) {
                                             byte[] sendData = new byte[4];
                                             sendData[0] = (byte) 0x55;
                                             sendData[1] = (byte) 0x01;
@@ -249,7 +249,9 @@ public class UsbDataTask extends BaseDataTask {
 
                                             int result = mUsbSerialPort.write(sendData, 3000);
                                             Log.e(TAG, "发送状态码：" + result);
+                                            hasSendAsk = true;
                                         } else if(contentStr.length() == 44){
+                                            LogView.setLog("contentStr="+contentStr);
                                             update(DataPraser.rawStr2Ctrl(contentStr));
                                         }else{
                                             Log.e(TAG, "error contentStr=" + contentStr);
