@@ -80,7 +80,7 @@
     <ScrollView
         android:layout_alignParentEnd="true"
         android:layout_width="280dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_height="match_parent">
         <TextView
             android:id="@+id/log_tv"

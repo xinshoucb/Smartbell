@@ -66,8 +66,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main_toyota);
         sharedPreferences = getSharedPreferences("bell", Context.MODE_PRIVATE);
 
-        LogView.setLogView((TextView) findViewById(R.id.log_tv));
-        LogView.setActivity(this);
+//        LogView.setLogView((TextView) findViewById(R.id.log_tv));
+//        LogView.setActivity(this);
         initSetValue();
 
         BellUtils.init(this);

@@ -19,8 +19,6 @@ public class DataPraser {
             return null;
         }
 
-
-
         ArrayList<String> contents = new ArrayList<String>();
         String content = "";
 
