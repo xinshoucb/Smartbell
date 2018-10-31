@@ -14,6 +14,8 @@ public class DataPraser {
     public static final String TAG = "DataPraser";
     public static StringBuilder lastSb;
 
+    public final static int DATA_LENGTH = 44;
+
     public static ArrayList<String> buffer2String(byte[] buf, int length){
         if (buf == null) {
             return null;
@@ -40,7 +42,7 @@ public class DataPraser {
 
         if (sb.length() > 0) {
             String tmpStr = sb.toString();
-            if(!"ask".equals(tmpStr) && sb.length() != 44){
+            if(!"ask".equals(tmpStr) && sb.length() != DATA_LENGTH){
                 lastSb = sb;
             }else{
                 contents.add(tmpStr);
@@ -55,7 +57,7 @@ public class DataPraser {
 
     public static String rawStr2Ctrl(String raw) {
         int lenght = raw.length();
-        String rtn = raw.substring(lenght - 20, lenght - 15);
+        String rtn = raw.substring(lenght - 20, lenght - 16);
         Log.d(TAG, "rawStr2Ctrl rtn = " + rtn);
         return rtn;
     }

@@ -98,7 +98,7 @@ public class WifiDataTask extends BaseDataTask {
                                 for (String contentStr : contents) {
                                     Log.d(TAG, "contentStr = " + contentStr + " bufLenght = " + contentStr.length());
                                     if (!contentStr.equals("")) {
-                                        if ((contentStr.length() == 3) || (contentStr.length() == 44)) {
+                                        if ((contentStr.length() == 3) || (contentStr.length() == DataPraser.DATA_LENGTH)) {
                                             Log.d(TAG, "msg bufLenght = " + bufLenght);
                                         } else {
                                             Log.d(TAG, "msg mix bufLenght = " + bufLenght);

@@ -250,7 +250,7 @@ public class UsbDataTask extends BaseDataTask {
                                             int result = mUsbSerialPort.write(sendData, 3000);
                                             Log.e(TAG, "发送状态码：" + result);
                                             hasSendAsk = true;
-                                        } else if(contentStr.length() == 44){
+                                        } else if(contentStr.length() == DataPraser.DATA_LENGTH){
                                             LogView.setLog("contentStr="+contentStr);
                                             update(DataPraser.rawStr2Ctrl(contentStr));
                                         }else{
