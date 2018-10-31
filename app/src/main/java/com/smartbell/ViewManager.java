@@ -99,7 +99,7 @@ public class ViewManager {
 
             // fill view
             for (int i = 0; i < showViewCount; i++) {
-                mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeBig));
+                mViewHolders[i].getContentTv().setTextSize(BellUtils.px2sp(mAc, textSizeMid));
                 mViewHolders[i].setData(curShowDatas.get(i));
             }
         } else {
