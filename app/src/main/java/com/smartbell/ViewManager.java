@@ -2,6 +2,7 @@ package com.smartbell;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class ViewManager {
     private float textSizeSmall = 0;
 
     private TextView logoTv;
+    private ImageView logoTvImg;
     private RelativeLayout mRootView;
 
     private int gap = 8;
@@ -45,6 +47,7 @@ public class ViewManager {
 
     private void initView() {
         logoTv = (TextView) mAc.findViewById(R.id.logo_tv);
+        logoTvImg = (ImageView) mAc.findViewById(R.id.logo_tv_img);
         BellUtils.setAntiAliasFlag(logoTv);
         logoTv.setSelected(true);
 
@@ -89,6 +92,7 @@ public class ViewManager {
         // show logo page when there is no data
         if (dataCount > 0) {
             logoTv.setVisibility(View.GONE);
+            logoTvImg.setVisibility(View.GONE);
 
             int showViewCount = Math.max(Math.min(SHOW_VIEW_COUNT_MAX, dataCount), 0);
 
@@ -103,7 +107,8 @@ public class ViewManager {
                 mViewHolders[i].setData(curShowDatas.get(i));
             }
         } else {
-            logoTv.setVisibility(View.VISIBLE);
+//            logoTv.setVisibility(View.VISIBLE);
+            logoTvImg.setVisibility(View.VISIBLE);
         }
 
     }

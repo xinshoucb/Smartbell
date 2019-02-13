@@ -13,7 +13,7 @@ import java.util.TimerTask;
  */
 public class FakeDataTask extends BaseDataTask {
     int count = 0;
-    String[] testData = {"#201","#334","#201","#2d2","#2d2","-201",
+    String[] testData = {"#201","#334","-201","-334" ,"#2d2","#2d2","-201",
 //            "#200","#2d0","#2d5","#300",
 //            "#500","#600","#400","#336",
 //            "#359","#2011","#2d22","#2d23",
