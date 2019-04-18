@@ -20,7 +20,7 @@ public class DataService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, " onCreate ");
-        mDataTask = DataTaskFactory.getDataTask(DataTaskFactory.TASK_TYPE_USB, this);
+        mDataTask = DataTaskFactory.getDataTask(DataTaskFactory.TASK_TYPE_FAKE, this);
 
         mDataTask.startTask();
     }

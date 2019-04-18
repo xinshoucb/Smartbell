@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class ToyotaViewManager {
     private MainActivity mAc;
 
-    private final static int SHOW_VIEW_COUNT_MAX = 20;
+    private final static int SHOW_VIEW_COUNT_MAX = 16;
 
     private ToyotaLayoutItemViewHolder[] mViewHolders = new ToyotaLayoutItemViewHolder[SHOW_VIEW_COUNT_MAX];
     private ArrayList<DataInfo> curShowDatas = new ArrayList<DataInfo>();

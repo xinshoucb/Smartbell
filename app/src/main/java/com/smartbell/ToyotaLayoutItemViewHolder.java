@@ -11,7 +11,7 @@ import com.smartbell.bean.ItemConfig;
 import com.smartbell.db.DBManager;
 
 public class ToyotaLayoutItemViewHolder {
-    private int[] lineLayoutId = {R.id.layout_line_item1, R.id.layout_line_item2, R.id.layout_line_item3, R.id.layout_line_item4, R.id.layout_line_item5};
+    private int[] lineLayoutId = {R.id.layout_line_item1, R.id.layout_line_item2, R.id.layout_line_item3, R.id.layout_line_item4};
     private int[] viewsId = {R.id.item_1, R.id.item_2, R.id.item_3, R.id.item_4};
 
     private RelativeLayout layoutItem;
@@ -31,6 +31,7 @@ public class ToyotaLayoutItemViewHolder {
         contentTv = (TextView) layoutItem.findViewById(R.id.content);
         indexTv = (TextView) layoutItem.findViewById(R.id.index);
         indexTv.setText("" + (index + 1));
+        indexTv.setVisibility(View.INVISIBLE);
         BellUtils.setAntiAliasFlag(contentTv);
 
         layoutItem.setClickable(true);
@@ -48,16 +49,16 @@ public class ToyotaLayoutItemViewHolder {
 
     public void refreshView() {
         if (setDataInfo != null) {
-            contentTv.setTextColor(setDataInfo.getTextColor());
-            layoutItem.setBackgroundColor(Color.parseColor(getBackgroudColorFromDataConfig()));
+            contentTv.setTextColor(Color.RED);
+            layoutItem.setBackgroundColor(Color.WHITE);
 
             contentTv.setText(setDataInfo.getData());
             contentTv.clearAnimation();
         }else{
-            contentTv.setTextColor(Color.GRAY);
-            layoutItem.setBackgroundColor(Color.BLACK);
+//            contentTv.setTextColor(Color.GRAY);
+            layoutItem.setBackgroundColor(Color.WHITE);
 
-            contentTv.setText("---");
+            contentTv.setText("");
             contentTv.clearAnimation();
         }
     }

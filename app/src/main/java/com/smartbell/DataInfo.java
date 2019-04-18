@@ -20,7 +20,7 @@ public class DataInfo {
         this.showTime = showTime;
         this.startTime = startTime;
 
-        initColorByData();
+        initRedeColor();
     }
 
     public long getStartTime() {
@@ -79,6 +79,10 @@ public class DataInfo {
         this.itemConfig = itemConfig;
     }
 
+    private void initRedeColor(){
+        backgroundColor = R.color.white;
+        textColor = R.color.red;
+    }
 
     private boolean isCustomColor = false;
     private void initColorByData(){
