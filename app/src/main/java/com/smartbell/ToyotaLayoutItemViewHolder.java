@@ -52,7 +52,7 @@ public class ToyotaLayoutItemViewHolder {
             contentTv.setTextColor(Color.RED);
             layoutItem.setBackgroundColor(Color.WHITE);
 
-            contentTv.setText(setDataInfo.getData());
+            contentTv.setText("0" + setDataInfo.getData());
             contentTv.clearAnimation();
         }else{
 //            contentTv.setTextColor(Color.GRAY);
